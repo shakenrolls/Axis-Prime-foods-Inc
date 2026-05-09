@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Shake N Rolls – Shakes & Drinks</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:   #ffffff;
+    --dark: #1a0820;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:1920px; height:1080px;
+    overflow:hidden;
+    background:var(--bg);
+    font-family:'Nunito', sans-serif;
+    color:var(--dark);
+  }
+
+  .page { width:1920px; height:1080px; display:flex; flex-direction:column; }
+
+  /* ══ TOP RUNNING STRIP — SKY BLUE ══ */
+  .top-strip {
+    height:64px; flex-shrink:0;
+    background:linear-gradient(90deg,#004488,#0088cc 12%,#00aaff 50%,#0088cc 88%,#004488);
+    border-bottom:4px solid #ffcc00;
+    overflow:hidden; display:flex; align-items:center;
+  }
+
+  .strip-run {
+    display:flex; width:max-content;
+    animation:srun 42s linear infinite; align-items:center;
+  }
+
+  @keyframes srun { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* Main text — SHAKES / MATCHA AND OTHER DRINKS */
+  .strip-item {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:38px; letter-spacing:11px; color:#fff;
+    text-shadow:0 0 20px rgba(255,255,255,.35), 0 2px 0 rgba(0,0,0,.3);
+    white-space:nowrap; padding:0 70px;
+  }
+
+  /* Sub text — (MADE WITH FRESH ICE CREAM BASE) — bigger, Nunito 900 bold */
+  .strip-item em {
+    font-family:'Nunito',sans-serif;
+    font-style:normal; font-size:28px; font-weight:900;
+    letter-spacing:3px; color:#fff;
+    text-shadow:0 0 16px rgba(255,255,255,.6);
+    margin-left:18px; vertical-align:middle;
+  }
+
+  .strip-sep { font-size:28px; color:rgba(255,255,255,.3); padding:0 14px; flex-shrink:0; }
+
+  /* ══ 3-COLUMN GRID ══ */
+  .grid {
+    flex:1; min-height:0;
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    padding:14px 44px 14px; gap:0;
+  }
+
+  .col {
+    display:flex; flex-direction:column;
+    padding:0 18px; overflow:hidden;
+    border-right:2px solid rgba(0,0,0,0.07);
+  }
+
+  .col:first-child { padding-left:0; }
+  .col:last-child  { padding-right:0; border-right:none; }
+
+  /* ── SECTION LABELS ── */
+  .slbl {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 18px; border-radius:9px;
+    margin-bottom:9px; flex-shrink:0;
+  }
+
+  .slbl-left {
+    display:flex; align-items:center; gap:11px;
+    font-family:'Nunito',sans-serif;
+    font-size:26px; font-weight:900;        /* BIGGER section label */
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  .slbl-bar { display:inline-block; width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+
+  /* Section price — BIGGER */
+  .slbl-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:44px; letter-spacing:1px;
+  }
+
+  /* Category colours */
+  .cat-smooth   .slbl { background:rgba(0,68,200,.08);   border:2px solid #0044cc; }
+  .cat-smooth   .slbl-left,.cat-smooth   .slbl-price { color:#003399; }
+
+  .cat-sig      .slbl { background:rgba(204,0,80,.08);   border:2px solid #cc0055; }
+  .cat-sig      .slbl-left,.cat-sig      .slbl-price { color:#990033; }
+
+  .cat-deluxe   .slbl { background:rgba(100,0,180,.08);  border:2px solid #6600bb; }
+  .cat-deluxe   .slbl-left,.cat-deluxe   .slbl-price { color:#4a0088; }
+
+  .cat-imperial .slbl { background:rgba(160,88,0,.09);   border:2px solid #aa5800; }
+  .cat-imperial .slbl-left,.cat-imperial .slbl-price { color:#7a3c00; }
+
+  .cat-matcha   .slbl { background:rgba(0,110,40,.08);   border:2px solid #006622; }
+  .cat-matcha   .slbl-left,.cat-matcha   .slbl-price { color:#004415; }
+
+  /* SEASONAL — vivid orange */
+  .cat-seasonal .slbl { background:rgba(210,90,0,.08);   border:2px solid #d05500; }
+  .cat-seasonal .slbl-left,.cat-seasonal .slbl-price { color:#a03c00; }
+
+  /* EXTRAS — slate/dark for neutral drinks */
+  .cat-extras   .slbl { background:rgba(40,80,140,.08);  border:2px solid #284880; }
+  .cat-extras   .slbl-left,.cat-extras   .slbl-price { color:#1a3060; }
+
+  .sect-gap { height:8px; flex-shrink:0; }
+
+  /* ── ITEMS GROUP ── */
+  .items-group { flex:1; display:flex; flex-direction:column; gap:7px; overflow:hidden; }
+
+  /* Item card */
+  .ic {
+    flex:1; min-height:0;
+    display:flex; align-items:center;
+    justify-content:space-between; gap:18px;
+    border-radius:12px; padding:0 22px 0 26px;
+    position:relative; overflow:hidden;
+  }
+
+  .ic::before {
+    content:''; position:absolute; top:0; left:0; width:5px; height:100%;
+    border-radius:12px 0 0 12px;
+  }
+
+  /* Per-category card styles */
+  .cat-smooth   .ic { background:rgba(0,68,200,.05);   border:1px solid rgba(0,68,200,.20); }
+  .cat-smooth   .ic::before { background:linear-gradient(180deg,#0044cc,#002288); }
+  .cat-smooth   .ic-n { color:#001a55; }
+  .cat-smooth   .ic-d { color:#2a3d7a; }
+  .cat-smooth   .ic-p { color:#0044cc; }
+
+  .cat-sig      .ic { background:rgba(204,0,80,.05);   border:1px solid rgba(204,0,80,.20); }
+  .cat-sig      .ic::before { background:linear-gradient(180deg,#cc0055,#880033); }
+  .cat-sig      .ic-n { color:#660022; }
+  .cat-sig      .ic-d { color:#8a2244; }
+  .cat-sig      .ic-p { color:#cc0055; }
+
+  .cat-deluxe   .ic { background:rgba(100,0,180,.05);  border:1px solid rgba(100,0,180,.20); }
+  .cat-deluxe   .ic::before { background:linear-gradient(180deg,#6600bb,#420077); }
+  .cat-deluxe   .ic-n { color:#30005a; }
+  .cat-deluxe   .ic-d { color:#4a1878; }
+  .cat-deluxe   .ic-p { color:#6600bb; }
+
+  .cat-imperial .ic { background:rgba(160,88,0,.06);   border:1px solid rgba(160,88,0,.22); }
+  .cat-imperial .ic::before { background:linear-gradient(180deg,#aa5800,#703800); }
+  .cat-imperial .ic-n { color:#4a2200; }
+  .cat-imperial .ic-d { color:#7a4a00; }
+  .cat-imperial .ic-p { color:#aa5800; }
+
+  .cat-matcha   .ic { background:rgba(0,110,40,.05);   border:1px solid rgba(0,110,40,.20); }
+  .cat-matcha   .ic::before { background:linear-gradient(180deg,#006622,#003a12); }
+  .cat-matcha   .ic-n { color:#002a0e; }
+  .cat-matcha   .ic-d { color:#1e5030; }
+  .cat-matcha   .ic-p { color:#006622; }
+
+  /* SEASONAL — rich orange card + name */
+  .cat-seasonal .ic { background:rgba(210,90,0,.05);   border:1px solid rgba(210,90,0,.22); }
+  .cat-seasonal .ic::before { background:linear-gradient(180deg,#d05500,#8a3000); }
+  .cat-seasonal .ic-n { color:#8a3000; font-size:50px; }   /* orange name, bigger */
+  .cat-seasonal .ic-d { color:#c06000; }
+  .cat-seasonal .ic-p { color:#d05500; }
+
+  /* EXTRAS — neutral navy card */
+  .cat-extras   .ic { background:rgba(40,80,140,.05);  border:1px solid rgba(40,80,140,.18); }
+  .cat-extras   .ic::before { background:linear-gradient(180deg,#284880,#162848); }
+  .cat-extras   .ic-n { color:#162848; }
+  .cat-extras   .ic-d { color:#2a4060; }
+  .cat-extras   .ic-p { color:#284880; }
+
+  .ic-l { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Item name — BIGGER: 50px */
+  .ic-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:50px; letter-spacing:2px; line-height:1.05;
+    display:flex; align-items:center; flex-wrap:nowrap;
+    white-space:nowrap; overflow:hidden;
+  }
+
+  /* Description — BIGGER: 22px */
+  .ic-d {
+    font-size:22px; font-weight:800; line-height:1.35; margin-top:5px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* Price — BIGGER: 60px */
+  .ic-p {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:60px; letter-spacing:1px;
+    white-space:nowrap; flex-shrink:0;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.14));
+  }
+
+  /* Tags */
+  .tg {
+    display:inline-flex; align-items:center; gap:4px;
+    font-family:'Nunito',sans-serif;
+    font-size:13px; font-weight:900; letter-spacing:1.5px;
+    padding:4px 11px; border-radius:5px; margin-left:10px;
+    vertical-align:middle; text-transform:uppercase; flex-shrink:0;
+  }
+
+  .tg-best  { background:linear-gradient(90deg,#aa7000,#cc9000); color:#fff; border:1.5px solid #ddaa00; box-shadow:0 0 10px rgba(180,130,0,.5); }
+  .tg-loved { background:linear-gradient(90deg,#cc0044,#ff2d78); color:#fff; border:1.5px solid #ff4488; box-shadow:0 0 10px rgba(255,45,120,.5); }
+  .tg-liked { background:linear-gradient(90deg,#006688,#0099bb); color:#fff; border:1.5px solid #00bbdd; box-shadow:0 0 10px rgba(0,153,187,.5); }
+  .tg-prem  { background:linear-gradient(90deg,#5b1fa0,#7c3aed); color:#fff; border:1.5px solid #9b5de5; box-shadow:0 0 10px rgba(124,58,237,.5); }
+  .tg-new   { background:linear-gradient(90deg,#005500,#1a8a30); color:#fff; border:1.5px solid #2aaa40; box-shadow:0 0 10px rgba(0,140,48,.45); }
+
+  /* ── MATCHA EXTRAS ── */
+  .matcha-extras {
+    margin-top:9px; flex-shrink:0;
+    background:rgba(0,110,40,.06);
+    border:2px solid rgba(0,110,40,.28);
+    border-radius:10px; padding:10px 16px;
+    display:flex; align-items:center; gap:14px;
+  }
+
+  .matcha-extras-label {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:18px; letter-spacing:4px; color:#006622;
+    border-right:2px solid rgba(0,110,40,.22); padding-right:13px; flex-shrink:0;
+  }
+
+  .matcha-extras-list { font-size:17px; font-weight:800; color:#003311; }
+
+  /* ── CSECT ── */
+  .csect { display:flex; flex-direction:column; overflow:hidden; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP RUNNING STRIP — SKY BLUE -->
+  <div class="top-strip">
+    <div class="strip-run">
+      <div class="strip-item">SHAKES <em>(MADE WITH FRESH ICE CREAM BASE)</em></div>
+      <div class="strip-sep">✦</div>
+      <div class="strip-item">MATCHA AND OTHER DRINKS</div>
+      <div class="strip-sep">✦</div>
+      <div class="strip-item">SHAKES <em>(MADE WITH FRESH ICE CREAM BASE)</em></div>
+      <div class="strip-sep">✦</div>
+      <div class="strip-item">MATCHA AND OTHER DRINKS</div>
+      <div class="strip-sep">✦</div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid">
+
+    <!-- ══ COL 1: SMOOTH SIPS + SIGNATURE STYLE ══ -->
+    <div class="col">
+
+      <div class="csect cat-smooth" style="flex:3">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#0044cc"></span>SMOOTH SIPS</div>
+          <span class="slbl-price">$8.99</span>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Vanilla Classic</div>
+              <div class="ic-d">Vanilla flavor</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Oreo Crush</div>
+              <div class="ic-d">Oreo cookies · Chocolate drizzle</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">KitKat Cascade <span class="tg tg-best">&#9733; BESTSELLER</span></div>
+              <div class="ic-d">KitKat · Chocolate drizzle</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="csect cat-sig" style="flex:3">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#cc0055"></span>SIGNATURE STYLE</div>
+          <span class="slbl-price">$10.49</span>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#c88800;">Mango Mashup <span class="tg tg-loved">MOST LOVED</span></div>
+              <div class="ic-d">Mango puree · Almonds</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#cc0022;">Strawberry Shot</div>
+              <div class="ic-d">Fresh strawberries</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Kesar Milk Badam <span class="tg tg-liked">MOST LIKED</span></div>
+              <div class="ic-d">Caramelized milk · Almonds · Saffron</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ COL 2: DELUXE + IMPERIAL + SEASONAL ══ -->
+    <div class="col">
+
+      <div class="csect cat-deluxe" style="flex:3.2">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#6600bb"></span>DELUXE DRINKS</div>
+          <span class="slbl-price">$10.99</span>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Royal Ras Malai</div>
+              <div class="ic-d">Ras malai · Nuts</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#b8650a;">Biscoff Bliss</div>
+              <div class="ic-d">Biscoff spread</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Ube Desire</div>
+              <div class="ic-d">Ube yam · Coconut · Milk</div>
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#006622;">Matcha Matcha</div>
+              <div class="ic-d">Ceremonial matcha · White chocolate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPERIAL INDULGENCE — no gap -->
+      <div class="csect cat-imperial" style="flex:1.6">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#aa5800"></span>IMPERIAL INDULGENCE</div>
+          <span class="slbl-price">$11.99</span>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#3a7a2a;">White Chocolate Pistachio</div>
+              <div class="ic-d">White chocolate · Pistachio butter · Nuts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEASONAL — only Fresh OJ, orange colours -->
+      <div class="csect cat-seasonal" style="flex:1">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#d05500"></span>SEASONAL</div>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Fresh Orange Juice</div>
+              <div class="ic-d">Freshly squeezed orange</div>
+            </div>
+            <div class="ic-p">$8.49</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ COL 3: MATCHA + EXTRAS ══ -->
+    <div class="col">
+
+      <!-- MATCHA COLD DRINKS — 5 items -->
+      <div class="csect cat-matcha" style="flex:5">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#006622"></span>MATCHA COLD DRINKS</div>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Matcha Lemonade</div>
+              <div class="ic-d">Matcha · Lemon</div>
+            </div>
+            <div class="ic-p">$6.99</div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Matcha Latte</div>
+              <div class="ic-d">Matcha · Milk</div>
+            </div>
+            <div class="ic-p">$6.99</div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Protein Matcha Latte</div>
+              <div class="ic-d">Matcha · Protein milk</div>
+            </div>
+            <div class="ic-p">$7.49</div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Pretty in Pink <span class="tg tg-best">&#9733; BESTSELLER</span></div>
+              <div class="ic-d">Matcha · Strawberry puree · Milk</div>
+            </div>
+            <div class="ic-p">$7.49</div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Sunset Mango</div>
+              <div class="ic-d">Matcha · Mango puree · Milk</div>
+            </div>
+            <div class="ic-p">$7.49</div>
+          </div>
+        </div>
+
+        <!-- Matcha customisation extras -->
+        <div class="matcha-extras">
+          <div class="matcha-extras-label">EXTRAS</div>
+          <div class="matcha-extras-list">Coconut or Oat Milk +$0.99 &nbsp;&nbsp;·&nbsp;&nbsp; Whipped Cream +$0.50</div>
+        </div>
+      </div>
+
+      <!-- EXTRA DRINKS under matcha -->
+      <div class="csect cat-extras" style="flex:2">
+        <div class="slbl">
+          <div class="slbl-left"><span class="slbl-bar" style="background:#284880"></span>EXTRA DRINKS</div>
+        </div>
+        <div class="items-group">
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n" style="color:#cc1100;">Soft Drink Can</div>
+              <div class="ic-d">Assorted flavours</div>
+            </div>
+            <div class="ic-p">$2.25</div>
+          </div>
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Water Bottle</div>
+              <div class="ic-d">Still water</div>
+            </div>
+            <div class="ic-p">$1.75</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /grid -->
+</div>
+</body>
+</html>
