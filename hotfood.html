@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Shake N Rolls – Hot Food Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:   #ff2d78;
+    --pinksm: #ff6fa8;
+    --pale:   #febfd4;
+    --sky:    #00c6ff;
+    --dark:   #0c0918;
+    --dark2:  #160f24;
+    --gold:   #ffcc00;
+    --gold2:  #ff9900;
+    --green:  #00e676;
+    --muted:  #9070b0;
+    --card:   rgba(255,255,255,0.05);
+    --bdr:    rgba(255,255,255,0.08);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--dark);
+    font-family: 'Nunito', sans-serif;
+    color: #fff;
+  }
+
+  /* Ambient glow */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 0%   0%,   rgba(255,45,120,.20) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 800px at 100% 30%,  rgba(0,198,255,.13)  0%, transparent 60%),
+      radial-gradient(ellipse 700px 400px at 50%  110%, rgba(255,153,0,.10)  0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    position:relative; z-index:1;
+    width:1920px; height:1080px;
+    display:flex; flex-direction:column;
+  }
+
+  /* ══════════════════════════════════════════
+     HEADER  82px
+  ══════════════════════════════════════════ */
+  .hdr {
+    height: 82px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 44px;
+    background: linear-gradient(180deg, #1e0c2e 0%, rgba(14,9,24,.9) 100%);
+    border-bottom: 2.5px solid var(--pink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hdr::before {
+    content:'';
+    position:absolute; top:-80px; left:50%; transform:translateX(-50%);
+    width:1200px; height:220px;
+    background:radial-gradient(ellipse, rgba(255,45,120,.28) 0%, transparent 65%);
+    animation:glow 5s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}
+    50%    {opacity:1;transform:translateX(-50%) scale(1.07)}
+  }
+
+  .hdr-brand {
+    display:flex; align-items:center; gap:18px; flex-shrink:0; position:relative;
+  }
+
+  .hdr-ring {
+    width:62px; height:62px; border-radius:50%;
+    border:2px solid var(--pink);
+    box-shadow:0 0 20px rgba(255,45,120,.55), inset 0 0 14px rgba(255,45,120,.1);
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    animation:spin 14s linear infinite;
+    flex-shrink:0;
+  }
+
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .hdr-name {
+    font-family:'Bebas Neue', sans-serif;
+    font-size: 56px;
+    letter-spacing: 3px;
+    line-height: 1;
+    background: linear-gradient(90deg, #fff 0%, var(--pale) 40%, var(--pink) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    filter:drop-shadow(0 0 18px rgba(255,45,120,.5));
+    background-size:200%; animation:shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer{
+    0%{background-position:200% center} 100%{background-position:-200% center}
+  }
+
+  .hdr-sub {
+    font-family:'Playfair Display', serif;
+    font-style:italic; font-size:14px;
+    color:var(--sky); letter-spacing:3px; margin-top:3px;
+  }
+
+  .hdr-center {
+    position:absolute; left:50%; transform:translateX(-50%);
+    text-align:center; white-space:nowrap; z-index:1;
+  }
+
+  .hdr-title {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:44px; letter-spacing:10px;
+    color:var(--gold); text-shadow:0 0 24px rgba(255,204,0,.55);
+  }
+
+  .hdr-hint {
+    font-size:12px; font-weight:800; letter-spacing:5px;
+    color:var(--muted); margin-top:2px; text-transform:uppercase;
+  }
+
+  .hdr-right {
+    text-align:right; flex-shrink:0; position:relative;
+    line-height:1.65; font-size:14px; font-weight:800; color:var(--muted);
+    letter-spacing:.5px;
+  }
+
+  .hdr-right b { color:var(--pale); }
+  .hdr-right em { color:var(--gold); font-style:normal; font-size:13px; letter-spacing:1px; }
+
+  /* ══════════════════════════════════════════
+     TICKER  38px
+  ══════════════════════════════════════════ */
+  .ticker-wrap {
+    height:38px; flex-shrink:0;
+    background:linear-gradient(90deg,#7a0032,var(--pink) 15%,#cc005a 50%,var(--pink) 85%,#7a0032);
+    overflow:hidden; display:flex; align-items:center;
+  }
+
+  .ticker {
+    display:flex; width:max-content;
+    animation:tick 30s linear infinite; align-items:center;
+  }
+
+  @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  .ti {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:20px; letter-spacing:3px;
+    color:#fff; padding:0 44px; white-space:nowrap;
+  }
+
+  .ti span { color:var(--gold); }
+
+  /* ══════════════════════════════════════════
+     POWER BAR  88px  (inc 12px top margin)
+  ══════════════════════════════════════════ */
+  .power-wrap { padding:12px 44px 0; flex-shrink:0; }
+
+  .power-bar {
+    height:88px;
+    border-radius:14px;
+    background:linear-gradient(100deg,#2a0a30 0%,#1c0828 40%,#0b1826 100%);
+    border:1.5px solid var(--pink);
+    box-shadow:0 0 44px rgba(255,45,120,.22), inset 0 1px 0 rgba(255,255,255,.06);
+    display:flex; align-items:center;
+    justify-content:space-between;
+    padding:0 40px;
+    position:relative; overflow:hidden;
+  }
+
+  .power-bar::before {
+    content:''; position:absolute; inset:-2px; border-radius:16px;
+    background:linear-gradient(90deg,var(--pink),var(--sky),var(--gold),var(--pinksm),var(--pink));
+    background-size:400%; animation:bm 5s linear infinite; z-index:-1;
+  }
+
+  @keyframes bm{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+
+  .p-badge {
+    background:linear-gradient(90deg,var(--gold),var(--gold2));
+    color:#000; font-family:'Bebas Neue',sans-serif;
+    font-size:17px; letter-spacing:2px;
+    padding:7px 22px; border-radius:50px;
+    box-shadow:0 4px 16px rgba(255,204,0,.4);
+    white-space:nowrap; flex-shrink:0;
+  }
+
+  .p-name {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:52px; letter-spacing:3px;
+    background:linear-gradient(90deg,#fff,var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    flex-shrink:0;
+  }
+
+  .p-desc {
+    display:flex; align-items:center; gap:14px;
+    font-size:17px; font-weight:800; color:var(--pale);
+    letter-spacing:.5px;
+  }
+
+  .p-dot {
+    width:5px; height:5px; background:var(--pink); border-radius:50%; flex-shrink:0;
+  }
+
+  .p-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:68px; line-height:1;
+    color:var(--gold); text-shadow:0 0 34px rgba(255,204,0,.65);
+    flex-shrink:0;
+  }
+
+  .p-price sup { font-size:30px; vertical-align:super; }
+
+  .p-val {
+    font-size:13px; color:var(--green);
+    font-weight:900; letter-spacing:2px;
+    text-transform:uppercase; flex-shrink:0;
+  }
+
+  /* ══════════════════════════════════════════
+     3-COLUMN GRID  (fills remaining space)
+  ══════════════════════════════════════════ */
+  .grid {
+    flex:1; min-height:0;
+    display:grid;
+    grid-template-columns:1fr 1fr 1.12fr;
+    padding:14px 44px 0;
+    gap:0;
+  }
+
+  .col {
+    display:flex; flex-direction:column;
+    padding:0 18px; overflow:hidden;
+    border-right:1px solid rgba(255,255,255,.07);
+  }
+
+  .col:first-child { padding-left:0; }
+  .col:last-child  { padding-right:0; border-right:none; }
+
+  /* Column header */
+  .chdr {
+    display:flex; align-items:center; gap:12px;
+    padding-bottom:12px; margin-bottom:14px;
+    border-bottom:2px solid; flex-shrink:0;
+  }
+
+  .cico { font-size:28px; flex-shrink:0; }
+
+  .cttl {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:36px; letter-spacing:5px; line-height:1;
+  }
+
+  .cln { flex:1; height:1px; }
+
+  .col.burg .chdr { border-color:rgba(255,204,0,.4); }
+  .col.burg .cttl { color:var(--gold); }
+  .col.burg .cln  { background:linear-gradient(90deg,rgba(255,204,0,.35),transparent); }
+
+  .col.side .chdr { border-color:rgba(0,198,255,.4); }
+  .col.side .cttl { color:var(--sky); }
+  .col.side .cln  { background:linear-gradient(90deg,rgba(0,198,255,.35),transparent); }
+
+  .col.comb .chdr { border-color:rgba(255,45,120,.45); }
+  .col.comb .cttl { color:var(--pink); }
+  .col.comb .cln  { background:linear-gradient(90deg,rgba(255,45,120,.4),transparent); }
+
+  /* Sub-category label */
+  .slbl {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:16px; letter-spacing:5px; color:var(--muted);
+    padding:2px 2px 8px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    margin-bottom:10px; flex-shrink:0;
+  }
+
+  .gap10 { height:10px; flex-shrink:0; }
+  .gap14 { height:14px; flex-shrink:0; }
+
+  /* ─── ITEM CARD ─── */
+  .ic {
+    display:flex; align-items:center;
+    justify-content:space-between; gap:16px;
+    background:var(--card); border:1px solid var(--bdr);
+    border-radius:12px; padding:16px 20px;
+    margin-bottom:10px; flex-shrink:0;
+    position:relative; overflow:hidden;
+  }
+
+  .ic::before {
+    content:''; position:absolute;
+    top:0; left:0; width:4px; height:100%;
+    border-radius:12px 0 0 12px;
+  }
+
+  /* Accent per context */
+  .col.burg .ic::before        { background:linear-gradient(180deg,var(--gold),var(--gold2)); }
+  .col.side .ic.veg::before    { background:linear-gradient(180deg,var(--green),#00a855); }
+  .col.side .ic:not(.veg)::before { background:linear-gradient(180deg,var(--sky),#0099cc); }
+
+  .ic-l { flex:1; min-width:0; }
+
+  .ic-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px; letter-spacing:1px; line-height:1.05;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  .ic-d {
+    font-size:13.5px; color:var(--muted);
+    font-weight:700; line-height:1.4; margin-top:5px;
+  }
+
+  .ic-p {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:36px; color:var(--gold);
+    text-shadow:0 0 12px rgba(255,204,0,.4);
+    white-space:nowrap; flex-shrink:0;
+  }
+
+  /* Tags */
+  .tg {
+    display:inline-flex; align-items:center;
+    font-size:10px; font-weight:900;
+    letter-spacing:1.5px; padding:2px 8px;
+    border-radius:4px; margin-left:6px;
+    vertical-align:middle; text-transform:uppercase;
+  }
+
+  .th { background:linear-gradient(90deg,var(--pink),var(--gold2)); color:#000; }
+  .ts { background:linear-gradient(90deg,#aa0000,var(--pink));      color:#fff; }
+  .tv { background:rgba(0,230,118,.15); border:1px solid var(--green); color:var(--green); }
+  .tp { background:rgba(0,160,80,.12);  border:1px solid #00a855;     color:#00a855; }
+  .tf { background:linear-gradient(90deg,#0077aa,var(--sky));        color:#fff; }
+
+  /* ─── COMBO CARD ─── */
+  .cc {
+    display:flex; align-items:center; gap:18px;
+    background:var(--card); border:1px solid var(--bdr);
+    border-radius:14px; padding:0 24px;
+    margin-bottom:0; flex-shrink:0;
+    position:relative; overflow:hidden;
+  }
+
+  /* Give combos defined heights so they fill the column */
+  .cc.reg { height: 122px; margin-bottom:10px; }
+  .cc.roy { height: 154px; }
+
+  .cc::before {
+    content:''; position:absolute;
+    top:0; left:0; bottom:0; width:4px;
+    border-radius:14px 0 0 14px;
+  }
+
+  .cc.c1::before { background:linear-gradient(180deg,var(--sky),#0099cc); }
+  .cc.c2::before { background:linear-gradient(180deg,var(--pink),#aa003c); }
+  .cc.c3::before { background:linear-gradient(180deg,var(--gold),var(--gold2)); }
+  .cc.c4::before { background:linear-gradient(180deg,var(--gold),var(--pink),var(--sky)); }
+
+  .cc.c1 { border-color:rgba(0,198,255,.2); }
+  .cc.c2 { border-color:rgba(255,45,120,.25); }
+  .cc.c3 { border-color:rgba(255,204,0,.25); }
+  .cc.c4 {
+    border-color:rgba(255,204,0,.45);
+    box-shadow:0 0 40px rgba(255,204,0,.14), 0 0 60px rgba(255,45,120,.08);
+    background:linear-gradient(100deg,rgba(255,204,0,.06),rgba(255,45,120,.05),rgba(0,198,255,.03));
+  }
+
+  .cc-emo {
+    font-size:48px; line-height:1; flex-shrink:0;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,.2));
+  }
+
+  .cc.roy .cc-emo { font-size:60px; }
+
+  .cc-info { flex:1; min-width:0; }
+
+  .cc-name {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:30px; letter-spacing:2px; line-height:1;
+  }
+
+  .cc.c1 .cc-name { color:var(--sky); }
+  .cc.c2 .cc-name { color:var(--pinksm); }
+  .cc.c3 .cc-name { color:var(--gold); }
+  .cc.c4 .cc-name {
+    font-size:38px;
+    background:linear-gradient(90deg,var(--gold),var(--pinksm),var(--sky));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+
+  .cc-items {
+    font-size:13.5px; color:var(--muted);
+    font-weight:700; margin-top:6px; line-height:1.45;
+  }
+
+  .cc.c4 .cc-items { color:#d8c8ec; font-size:14.5px; }
+
+  .cc-fam {
+    font-size:11px; font-weight:900;
+    letter-spacing:2px; color:var(--pinksm);
+    margin-top:5px; text-transform:uppercase;
+  }
+
+  .cc-r { text-align:right; flex-shrink:0; }
+
+  .cc-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:52px; line-height:1;
+  }
+
+  .cc.c1 .cc-price { color:var(--sky);    text-shadow:0 0 18px rgba(0,198,255,.5); }
+  .cc.c2 .cc-price { color:var(--pinksm); text-shadow:0 0 18px rgba(255,45,120,.5); }
+  .cc.c3 .cc-price { color:var(--gold);   text-shadow:0 0 18px rgba(255,204,0,.5); }
+  .cc.c4 .cc-price { color:var(--gold); font-size:62px; text-shadow:0 0 30px rgba(255,204,0,.7); }
+
+  .cc-save {
+    font-size:11px; font-weight:900;
+    letter-spacing:1.5px; color:var(--green);
+    text-transform:uppercase; margin-top:4px;
+  }
+
+  .cc.c4 .cc-save { color:var(--gold); }
+
+  /* ─── Upsell block (fills remaining sides column space) ─── */
+  .upsell {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:10px 0 0;
+  }
+
+  .upsell-inner {
+    width:100%;
+    background:linear-gradient(135deg,rgba(0,198,255,.08),rgba(255,45,120,.05));
+    border:1px solid rgba(0,198,255,.18);
+    border-radius:14px; padding:20px 24px; text-align:center;
+  }
+
+  .upsell-hd {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px; letter-spacing:4px; color:var(--sky);
+  }
+
+  .upsell-body {
+    font-family:'Playfair Display', serif;
+    font-style:italic; font-size:14px;
+    color:var(--muted); margin-top:6px; line-height:1.5;
+  }
+
+  .upsell-cta {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px; letter-spacing:3px;
+    color:var(--pink); margin-top:10px;
+  }
+
+  /* ─── Savings callout (below combos) ─── */
+  .savings {
+    margin-top:12px; flex-shrink:0;
+    background:linear-gradient(90deg,rgba(255,204,0,.06),rgba(255,45,120,.05),rgba(0,198,255,.04));
+    border:1px solid rgba(255,204,0,.2);
+    border-radius:12px; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .sav-lbl {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px; letter-spacing:3px; color:var(--gold);
+  }
+
+  .sav-body {
+    font-size:13px; font-weight:800; color:var(--muted);
+    text-align:center;
+  }
+
+  .sav-tag {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px; letter-spacing:2px; color:var(--green);
+  }
+
+  /* ══════════════════════════════════════════
+     FOOTER  60px  (inc 12px top margin)
+  ══════════════════════════════════════════ */
+  .ftr-wrap { padding:12px 44px 0; flex-shrink:0; }
+
+  .ftr {
+    height:60px;
+    display:flex; align-items:center;
+    justify-content:space-between;
+    padding:0 36px;
+    background:linear-gradient(90deg,var(--dark2),#1c0a2c 50%,var(--dark2));
+    border-top:2px solid var(--pink);
+    border-radius:12px 12px 0 0;
+  }
+
+  .f-url {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px; letter-spacing:4px;
+    color:var(--sky); text-shadow:0 0 14px rgba(0,198,255,.5);
+  }
+
+  .f-tel {
+    font-size:14px; font-weight:800;
+    color:var(--muted); margin-top:3px; letter-spacing:.5px;
+  }
+
+  .f-tel b { color:var(--pale); }
+
+  .f-mid { text-align:center; }
+
+  .f-brand {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:34px; letter-spacing:6px;
+    color:var(--pink); text-shadow:0 0 18px rgba(255,45,120,.5);
+  }
+
+  .f-addr {
+    font-size:11px; font-weight:700; letter-spacing:2px; color:var(--muted); margin-top:1px;
+  }
+
+  .f-hrs {
+    text-align:right; font-size:13px; font-weight:800; color:var(--muted); line-height:1.6;
+  }
+
+  .f-hrs b  { color:var(--gold); }
+  .f-hrs em { color:var(--pink); font-style:normal; font-size:11.5px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-brand">
+      <div class="hdr-ring">🍔</div>
+      <div>
+        <div class="hdr-name">SHAKE N ROLLS</div>
+        <div class="hdr-sub">Crafted with Passion · Served with Pride</div>
+      </div>
+    </div>
+
+    <div class="hdr-center">
+      <div class="hdr-title">🔥 HOT FOOD MENU 🔥</div>
+      <div class="hdr-hint">Fresh · Hot · Handcrafted Every Order</div>
+    </div>
+
+    <div class="hdr-right">
+      <div><b>245 Lucas Ave Unit 101</b>, Winnipeg MB</div>
+      <div><b>431-996-7655</b> &nbsp;|&nbsp; shakenrolls.ca</div>
+      <div><em>OPEN DAILY · 2PM – MIDNIGHT</em></div>
+    </div>
+  </header>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ti">🔥 FRESH &amp; HOT EVERY ORDER</div>
+      <div class="ti">🍔 BUTTER CHICKEN BLAST — <span>$12.49</span></div>
+      <div class="ti">🍟 CLASSIC WEDGES — <span>$4.99</span></div>
+      <div class="ti">🧀 BUTTER CHICKEN POUTINE — <span>$9.99</span></div>
+      <div class="ti">👑 ROYAL FEAST COMBO — <span>$44.99</span></div>
+      <div class="ti">🌿 VEG &amp; PLANT-BASED OPTIONS AVAILABLE</div>
+      <div class="ti">💎 INDULGENCE COMBO + ICE CREAM — <span>$29.99</span></div>
+      <!-- dupe for seamless loop -->
+      <div class="ti">🔥 FRESH &amp; HOT EVERY ORDER</div>
+      <div class="ti">🍔 BUTTER CHICKEN BLAST — <span>$12.49</span></div>
+      <div class="ti">🍟 CLASSIC WEDGES — <span>$4.99</span></div>
+      <div class="ti">🧀 BUTTER CHICKEN POUTINE — <span>$9.99</span></div>
+      <div class="ti">👑 ROYAL FEAST COMBO — <span>$44.99</span></div>
+      <div class="ti">🌿 VEG &amp; PLANT-BASED OPTIONS AVAILABLE</div>
+      <div class="ti">💎 INDULGENCE COMBO + ICE CREAM — <span>$29.99</span></div>
+    </div>
+  </div>
+
+  <!-- POWER COMBO FEATURE BAR -->
+  <div class="power-wrap">
+    <div class="power-bar">
+      <div class="p-badge">⚡ TODAY'S BEST DEAL</div>
+      <div class="p-name">POWER COMBO</div>
+      <div class="p-desc">
+        <span>Any Burger</span>
+        <div class="p-dot"></div>
+        <span>Classic Wedges</span>
+        <div class="p-dot"></div>
+        <span>Soft Drink</span>
+        <div class="p-dot"></div>
+        <span style="color:var(--green);font-weight:900;">Mix &amp; Match YOUR Choice</span>
+      </div>
+      <div class="p-price"><sup>$</sup>16<span style="color:var(--pinksm)">.99</span></div>
+      <div class="p-val">BEST VALUE ✓</div>
+    </div>
+  </div>
+
+  <!-- 3-COLUMN GRID -->
+  <div class="grid">
+
+    <!-- ── COL 1 : BURGERS ── -->
+    <div class="col burg">
+      <div class="chdr">
+        <div class="cico">🍔</div>
+        <div class="cttl">BURGERS</div>
+        <div class="cln"></div>
+      </div>
+
+      <div class="slbl">— CHICKEN BURGERS —</div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Butter Chicken Blast <span class="tg th">🔥 HOT</span></div>
+          <div class="ic-d">Grilled chicken breast · Butter chicken sauce · Lettuce · Tomato · Onion · Creamy mayo</div>
+        </div>
+        <div class="ic-p">$12.49</div>
+      </div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Tandoori Twist</div>
+          <div class="ic-d">Tandoori chicken breast · Mint mayo · Lettuce · Tomato · Onion</div>
+        </div>
+        <div class="ic-p">$11.99</div>
+      </div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Nashville Heat <span class="tg ts">🌶 SPICY</span></div>
+          <div class="ic-d">Crispy fried chicken · Nashville hot sauce · Pickles · Jalapeños · Slaw</div>
+        </div>
+        <div class="ic-p">$10.99</div>
+      </div>
+
+      <div class="gap14"></div>
+      <div class="slbl">— VEGETARIAN BURGERS —</div>
+
+      <div class="ic veg" style="border-color:rgba(0,230,118,.15)">
+        <div class="ic-l">
+          <div class="ic-n">Midnight Bean <span class="tg tv">● VEG</span></div>
+          <div class="ic-d">Black bean patty · Lettuce · Tomato · Onion · Chipotle · Mint mayo</div>
+        </div>
+        <div class="ic-p" style="color:var(--green)">$10.49</div>
+      </div>
+
+      <div class="ic veg" style="border-color:rgba(0,160,80,.15)">
+        <div class="ic-l">
+          <div class="ic-n">Beyond Classic <span class="tg tp">● PLANT</span></div>
+          <div class="ic-d">Beyond meat patty · Cheese · Lettuce · Tomato · Onion · Chipotle</div>
+        </div>
+        <div class="ic-p" style="color:var(--green)">$10.99</div>
+      </div>
+    </div>
+
+    <!-- ── COL 2 : WEDGES & POUTINE ── -->
+    <div class="col side">
+      <div class="chdr">
+        <div class="cico">🍟</div>
+        <div class="cttl">WEDGES &amp; POUTINE</div>
+        <div class="cln"></div>
+      </div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Classic Wedges</div>
+          <div class="ic-d">Crispy seasoned potato wedges — perfectly golden every time</div>
+        </div>
+        <div class="ic-p">$4.99</div>
+      </div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Classic Poutine</div>
+          <div class="ic-d">Wedges · Squeaky cheese curds · Rich savoury gravy</div>
+        </div>
+        <div class="ic-p">$7.99</div>
+      </div>
+
+      <div class="ic veg" style="border-color:rgba(0,230,118,.15)">
+        <div class="ic-l">
+          <div class="ic-n">Butter Veg Poutine <span class="tg tv">● VEG</span></div>
+          <div class="ic-d">Wedges · Cheese curds · Creamy butter gravy · Veggies</div>
+        </div>
+        <div class="ic-p" style="color:var(--green)">$8.99</div>
+      </div>
+
+      <div class="ic">
+        <div class="ic-l">
+          <div class="ic-n">Butter Chicken Poutine <span class="tg tf">⭐ FAV</span></div>
+          <div class="ic-d">Wedges · Cheese curds · Butter chicken gravy · Veggies</div>
+        </div>
+        <div class="ic-p">$9.99</div>
+      </div>
+
+      <div class="upsell">
+        <div class="upsell-inner">
+          <div class="upsell-hd">🍦 FINISH WITH ROLLED ICE CREAM</div>
+          <div class="upsell-body">Handcrafted fresh to order — Winnipeg's favourite frozen treat</div>
+          <div class="upsell-cta">SEE ICE CREAM MENU  ➜</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COL 3 : COMBOS ── -->
+    <div class="col comb">
+      <div class="chdr">
+        <div class="cico">⚡</div>
+        <div class="cttl">COMBO DEALS</div>
+        <div class="cln"></div>
+      </div>
+
+      <div class="cc reg c1">
+        <div class="cc-emo">⭐</div>
+        <div class="cc-info">
+          <div class="cc-name">CLASSIC COMBO</div>
+          <div class="cc-items">Any Burger &nbsp;+&nbsp; Classic Wedges &nbsp;+&nbsp; Any Classic Shake or Drink</div>
+        </div>
+        <div class="cc-r">
+          <div class="cc-price">$18.99</div>
+          <div class="cc-save">GREAT VALUE</div>
+        </div>
+      </div>
+
+      <div class="cc reg c2">
+        <div class="cc-emo">🔥</div>
+        <div class="cc-info">
+          <div class="cc-name">SIGNATURE COMBO</div>
+          <div class="cc-items">Any Burger &nbsp;+&nbsp; Classic Poutine &nbsp;+&nbsp; Any Shake or Drink</div>
+        </div>
+        <div class="cc-r">
+          <div class="cc-price">$22.99</div>
+          <div class="cc-save">MOST POPULAR</div>
+        </div>
+      </div>
+
+      <div class="cc reg c3">
+        <div class="cc-emo">💎</div>
+        <div class="cc-info">
+          <div class="cc-name">INDULGENCE COMBO</div>
+          <div class="cc-items">Any Burger &nbsp;+&nbsp; Loaded Wedges &nbsp;+&nbsp; Any Shake or Drink &nbsp;+&nbsp; Ice Cream</div>
+        </div>
+        <div class="cc-r">
+          <div class="cc-price">$29.99</div>
+          <div class="cc-save">TREAT YOURSELF</div>
+        </div>
+      </div>
+
+      <div class="cc roy c4">
+        <div class="cc-emo">👑</div>
+        <div class="cc-info">
+          <div class="cc-name">ROYAL FEAST COMBO</div>
+          <div class="cc-items">2 Burgers &nbsp;+&nbsp; Loaded Wedges &nbsp;+&nbsp; 2 Shakes &nbsp;+&nbsp; Ice Cream</div>
+          <div class="cc-fam">FAMILY &nbsp;/&nbsp; SHARING</div>
+        </div>
+        <div class="cc-r">
+          <div class="cc-price">$44.99</div>
+          <div class="cc-save">🔥 BEST DEAL</div>
+        </div>
+      </div>
+
+      <div class="savings">
+        <div class="sav-lbl">✦ CUSTOMIZE ANY COMBO</div>
+        <div class="sav-body">Mix &amp; match burgers · Swap sides · Pick your drink<br>We make it YOUR way, every time</div>
+        <div class="sav-tag">ASK US HOW ➜</div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- FOOTER -->
+  <div class="ftr-wrap">
+    <div class="ftr">
+      <div>
+        <div class="f-url">SHAKENROLLS.CA</div>
+        <div class="f-tel">📞 <b>431-996-7655</b></div>
+      </div>
+      <div class="f-mid">
+        <div class="f-brand">SHAKE N ROLLS</div>
+        <div class="f-addr">245 LUCAS AVE UNIT 101 &nbsp;·&nbsp; WINNIPEG, MB</div>
+      </div>
+      <div class="f-hrs">
+        <div><b>OPEN DAILY</b> &nbsp; 2:00 PM – 12:00 AM</div>
+        <div><em>DINE IN &nbsp;·&nbsp; TAKEOUT</em></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
