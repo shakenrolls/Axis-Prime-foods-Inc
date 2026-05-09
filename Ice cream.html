@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Shake N Rolls – Rolled Ice Cream Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:    #ff2d78;
+    --pinksm:  #ff6fa8;
+    --pale:    #febfd4;
+    --dark:    #080614;
+    --dark2:   #110e20;
+    --gold:    #ffcc00;
+    --gold2:   #ff9900;
+    --purple:  #b06aff;
+    --teal:    #00d4aa;
+    --muted:   #9080b8;
+    --card:    rgba(255,255,255,0.052);
+    --bdr:     rgba(255,255,255,0.09);
+
+    --cc-classic:  #ff7043;
+    --cc-fusion:   #00d4aa;
+    --cc-loaded:   #c084fc;
+    --cc-desi:     #ffb300;
+    --cc-premium:  #ffe066;
+    --cc-specials: #f72585;
+    --cc-limited:  #00e5ff;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:1920px; height:1080px;
+    overflow:hidden;
+    background:var(--dark);
+    font-family:'Nunito', sans-serif;
+    color:#fff;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 800px 500px at 0%   0%,  rgba(176,106,255,.20) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 700px at 100% 25%, rgba(0,212,170,.15)  0%, transparent 60%),
+      radial-gradient(ellipse 700px 400px at 50% 110%, rgba(247,37,133,.12) 0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    position:relative; z-index:1;
+    width:1920px; height:1080px;
+    display:flex; flex-direction:column;
+  }
+
+  /* ════════════════════════════════════════
+     HEADER  92px  — brand name only
+  ════════════════════════════════════════ */
+  .hdr {
+    height:92px; flex-shrink:0;
+    display:flex; align-items:center;
+    padding:0 48px;
+    background:linear-gradient(180deg,#1a0830 0%,rgba(8,6,20,.94) 100%);
+    border-bottom:3px solid var(--pink);
+    position:relative; overflow:hidden;
+  }
+
+  /* Ambient glow centred on brand */
+  .hdr::before {
+    content:''; position:absolute;
+    top:-100px; left:0; width:800px; height:280px;
+    background:radial-gradient(ellipse, rgba(176,106,255,.30) 0%, transparent 65%);
+    animation:hglow 5s ease-in-out infinite;
+    pointer-events:none;
+  }
+
+  @keyframes hglow {
+    0%,100%{opacity:.7;transform:scale(1)}
+    50%    {opacity:1;transform:scale(1.06)}
+  }
+
+  /* Spinning ring with SVG cup */
+  .hdr-ring {
+    width:74px; height:74px; border-radius:50%;
+    border:2.5px solid var(--pink);
+    box-shadow:0 0 26px rgba(255,45,120,.6), inset 0 0 16px rgba(176,106,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    animation:spin 14s linear infinite; flex-shrink:0;
+    background:rgba(255,45,120,.07);
+    margin-right:22px;
+  }
+
+  @keyframes spin { to{ transform:rotate(360deg); } }
+
+  .hdr-ring svg {
+    width:46px; height:46px;
+    animation:cspin 14s linear infinite;
+    filter:drop-shadow(0 0 7px rgba(255,45,120,.7));
+  }
+
+  @keyframes cspin { to{ transform:rotate(-360deg); } }
+
+  /* Brand name — large, left-anchored */
+  .hdr-name {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:88px; letter-spacing:4px; line-height:1;
+    background:linear-gradient(90deg, #fff 0%, var(--pale) 40%, var(--pink) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    filter:drop-shadow(0 0 22px rgba(255,45,120,.55));
+    background-size:200%; animation:shimmer 4s linear infinite;
+    position:relative;
+  }
+
+  @keyframes shimmer {
+    0%{background-position:200% center} 100%{background-position:-200% center}
+  }
+
+  /* ════════════════════════════════════════
+     TICKER  40px
+  ════════════════════════════════════════ */
+  .ticker-wrap {
+    height:40px; flex-shrink:0;
+    background:linear-gradient(90deg,#4a006a,var(--purple) 15%,#7a00b8 50%,var(--purple) 85%,#4a006a);
+    overflow:hidden; display:flex; align-items:center;
+  }
+
+  .ticker {
+    display:flex; width:max-content;
+    animation:tick 30s linear infinite; align-items:center;
+  }
+
+  @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  .ti {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:22px; letter-spacing:4px;
+    color:#fff; padding:0 52px; white-space:nowrap;
+  }
+
+  .ti span { color:var(--gold); }
+  .ti em   { color:var(--teal); font-style:normal; }
+
+  /* ════════════════════════════════════════
+     FEATURE BAR  90px  (+ 12px top margin)
+  ════════════════════════════════════════ */
+  .feat-wrap { padding:12px 48px 0; flex-shrink:0; }
+
+  .feat-bar {
+    height:90px;
+    border-radius:14px;
+    background:linear-gradient(100deg,#1a0630 0%,#0e0a28 40%,#060f1e 100%);
+    border:1.5px solid var(--purple);
+    box-shadow:0 0 44px rgba(176,106,255,.2), inset 0 1px 0 rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 44px;
+    position:relative; overflow:hidden;
+  }
+
+  .feat-bar::before {
+    content:''; position:absolute; inset:-2px; border-radius:16px;
+    background:linear-gradient(90deg,var(--purple),var(--teal),var(--pink),var(--gold),var(--purple));
+    background-size:400%; animation:bm 5s linear infinite; z-index:-1;
+  }
+
+  @keyframes bm{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+
+  /* Badge with SVG cup */
+  .f-badge {
+    display:flex; align-items:center; gap:14px;
+    background:linear-gradient(90deg,var(--purple),#8800dd);
+    color:#fff; font-family:'Bebas Neue',sans-serif;
+    font-size:20px; letter-spacing:3px;
+    padding:8px 26px 8px 16px; border-radius:50px;
+    box-shadow:0 4px 18px rgba(176,106,255,.45);
+    white-space:nowrap; flex-shrink:0;
+  }
+
+  .f-badge svg { width:36px; height:36px; flex-shrink:0; }
+
+  .f-title {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:56px; letter-spacing:4px;
+    background:linear-gradient(90deg,#fff,var(--teal));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    flex-shrink:0;
+  }
+
+  .f-from { text-align:center; flex-shrink:0; }
+
+  .f-from-lbl {
+    font-size:15px; font-weight:900; letter-spacing:3px; color:var(--muted); text-transform:uppercase;
+  }
+
+  .f-from-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:68px; line-height:1;
+    color:var(--gold); text-shadow:0 0 32px rgba(255,204,0,.65);
+  }
+
+  .f-from-price sup { font-size:30px; vertical-align:super; }
+
+  /* Legend — large dots + large text */
+  .f-legend {
+    display:flex; flex-direction:column; gap:8px;
+    flex-shrink:0;
+  }
+
+  .leg-row {
+    display:flex; align-items:center; gap:10px;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:18px; letter-spacing:2px; color:#fff;
+  }
+
+  .leg-dot {
+    width:18px; height:18px; border-radius:50%;
+    flex-shrink:0;
+    box-shadow:0 0 8px currentColor;
+  }
+
+  /* ════════════════════════════════════════
+     3-COLUMN GRID  (remaining space)
+  ════════════════════════════════════════ */
+  .grid {
+    flex:1; min-height:0;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    padding:14px 48px 0;
+    gap:0;
+  }
+
+  .col {
+    display:flex; flex-direction:column;
+    padding:0 20px; overflow:hidden;
+    border-right:1px solid rgba(255,255,255,.07);
+  }
+
+  .col:first-child { padding-left:0; }
+  .col:last-child  { padding-right:0; border-right:none; }
+
+  /* Column header */
+  .chdr {
+    display:flex; align-items:center; gap:14px;
+    padding-bottom:10px; margin-bottom:12px;
+    flex-shrink:0;
+    border-bottom:2.5px solid rgba(255,255,255,.12);
+  }
+
+  /* CSS shape column icons — larger */
+  .cico {
+    width:30px; height:30px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .cico-diamond {
+    width:22px; height:22px;
+    transform:rotate(45deg);
+    border:2.5px solid currentColor;
+  }
+
+  .cico-circle {
+    width:24px; height:24px;
+    border-radius:50%;
+    border:2.5px solid currentColor;
+  }
+
+  .col-1-icon { color:var(--cc-classic); }
+  .col-2-icon { color:var(--cc-desi); }
+  .col-3-icon { color:var(--cc-specials); }
+
+  /* Column title — big */
+  .cttl {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:46px; letter-spacing:5px; line-height:1; color:#fff;
+  }
+
+  .cln { flex:1; height:1.5px; background:linear-gradient(90deg,rgba(255,255,255,.14),transparent); }
+
+  /* ── Category section ── */
+  .csect {
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+
+  /* Section label — big, with large colour bar */
+  .slbl {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:24px; letter-spacing:5px;
+    padding:4px 2px 8px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    margin-bottom:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .slbl-left { display:flex; align-items:center; gap:10px; }
+
+  /* Colour bar — large square */
+  .slbl-bar {
+    display:inline-block;
+    width:14px; height:14px;
+    border-radius:3px;
+    flex-shrink:0;
+  }
+
+  .slbl-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px; letter-spacing:1px;
+  }
+
+  /* Category label colours */
+  .cat-classic  .slbl { color:var(--cc-classic); }
+  .cat-fusion   .slbl { color:var(--cc-fusion); }
+  .cat-loaded   .slbl { color:var(--cc-loaded); }
+  .cat-desi     .slbl { color:var(--cc-desi); }
+  .cat-premium  .slbl { color:var(--cc-premium); }
+  .cat-specials .slbl { color:var(--cc-specials); }
+  .cat-limited  .slbl { color:var(--cc-limited); }
+
+  .cat-classic  .slbl-price { color:var(--cc-classic);  text-shadow:0 0 12px rgba(255,112,67,.6); }
+  .cat-fusion   .slbl-price { color:var(--cc-fusion);   text-shadow:0 0 12px rgba(0,212,170,.6); }
+  .cat-loaded   .slbl-price { color:var(--cc-loaded);   text-shadow:0 0 12px rgba(192,132,252,.6); }
+  .cat-desi     .slbl-price { color:var(--cc-desi);     text-shadow:0 0 12px rgba(255,179,0,.6); }
+  .cat-premium  .slbl-price { color:var(--cc-premium);  text-shadow:0 0 12px rgba(255,224,102,.6); }
+  .cat-specials .slbl-price { color:var(--cc-specials); text-shadow:0 0 12px rgba(247,37,133,.6); }
+  .cat-limited  .slbl-price { color:var(--cc-limited);  text-shadow:0 0 12px rgba(0,229,255,.6); }
+
+  .items-group {
+    flex:1; display:flex; flex-direction:column; gap:8px; overflow:hidden;
+  }
+
+  .sect-gap { height:12px; flex-shrink:0; }
+
+  /* ── Item card ── */
+  .ic {
+    flex:1; min-height:0;
+    display:flex; align-items:center;
+    gap:14px;
+    background:var(--card); border:1px solid var(--bdr);
+    border-radius:12px; padding:0 20px 0 24px;
+    position:relative; overflow:hidden;
+  }
+
+  /* Left accent bar */
+  .ic::before {
+    content:''; position:absolute;
+    top:0; left:0; width:5px; height:100%;
+    border-radius:12px 0 0 12px;
+  }
+
+  .cat-classic  .ic::before { background:linear-gradient(180deg,var(--cc-classic),#e53935); }
+  .cat-fusion   .ic::before { background:linear-gradient(180deg,var(--cc-fusion),#009977); }
+  .cat-loaded   .ic::before { background:linear-gradient(180deg,var(--cc-loaded),#7c3aed); }
+  .cat-desi     .ic::before { background:linear-gradient(180deg,var(--cc-desi),#e67e00); }
+  .cat-premium  .ic::before { background:linear-gradient(180deg,var(--cc-premium),var(--gold2)); }
+  .cat-specials .ic::before { background:linear-gradient(180deg,var(--cc-specials),#c2185b); }
+  .cat-limited  .ic::before { background:linear-gradient(180deg,var(--cc-limited),#0097a7); }
+
+  .cat-classic  .ic { border-color:rgba(255,112,67,.2); }
+  .cat-fusion   .ic { border-color:rgba(0,212,170,.2); }
+  .cat-loaded   .ic { border-color:rgba(192,132,252,.2); }
+  .cat-desi     .ic { border-color:rgba(255,179,0,.2); }
+  .cat-premium  .ic { border-color:rgba(255,224,102,.28); }
+  .cat-specials .ic { border-color:rgba(247,37,133,.24); }
+  .cat-limited  .ic { border-color:rgba(0,229,255,.24); }
+
+  .ic-l {
+    flex:1; min-width:0;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+
+  /* Product name — large, 15-foot readable */
+  .ic-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:36px; letter-spacing:1.5px; line-height:1.05;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* Product description — bigger, single line */
+  .ic-d {
+    font-size:17px; font-weight:800;
+    color:var(--muted);
+    line-height:1.25; margin-top:3px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* Special name colours for premium/limited */
+  .cat-premium  .ic-n { color:var(--cc-premium); }
+  .cat-limited  .ic-n { color:var(--cc-limited); }
+
+  /* Tags — bigger */
+  .tg {
+    display:inline-flex; align-items:center;
+    font-size:12px; font-weight:900; letter-spacing:1.5px;
+    padding:3px 9px; border-radius:5px;
+    vertical-align:middle; text-transform:uppercase;
+    flex-shrink:0; margin-left:8px;
+  }
+
+  .tg-best  { background:linear-gradient(90deg,var(--gold),var(--gold2));       color:#000; }
+  .tg-loved { background:linear-gradient(90deg,var(--pink),var(--gold2));       color:#000; }
+  .tg-prem  { background:linear-gradient(90deg,var(--cc-premium),var(--gold2)); color:#000; }
+  .tg-lim   { background:rgba(0,229,255,.15); border:1.5px solid var(--cc-limited); color:var(--cc-limited); }
+  .tg-new   { background:rgba(0,212,170,.15); border:1.5px solid var(--teal);       color:var(--teal); }
+
+  /* ════════════════════════════════════════
+     FOOTER  62px  (+ 12px top margin)
+  ════════════════════════════════════════ */
+  .ftr-wrap { padding:12px 48px 0; flex-shrink:0; }
+
+  .ftr {
+    height:62px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 40px;
+    background:linear-gradient(90deg,var(--dark2),#1a0a2c 50%,var(--dark2));
+    border-top:2.5px solid var(--purple);
+    border-radius:12px 12px 0 0;
+  }
+
+  .f-url {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px; letter-spacing:4px;
+    color:var(--teal); text-shadow:0 0 14px rgba(0,212,170,.5);
+  }
+
+  .f-tel { font-size:16px; font-weight:800; color:var(--muted); margin-top:2px; }
+  .f-tel b { color:var(--pale); }
+
+  .f-mid { text-align:center; }
+
+  .f-brand {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:36px; letter-spacing:6px;
+    color:var(--pink); text-shadow:0 0 18px rgba(255,45,120,.5);
+  }
+
+  .f-addr { font-size:12px; font-weight:800; letter-spacing:2px; color:var(--muted); margin-top:1px; }
+
+  .f-hrs { text-align:right; font-size:15px; font-weight:800; color:var(--muted); line-height:1.6; }
+  .f-hrs b  { color:var(--gold); }
+  .f-hrs em { color:var(--purple); font-style:normal; font-size:12px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER — brand name only ══ -->
+  <header class="hdr">
+
+    <div class="hdr-ring">
+      <svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 20 L11 42 L29 42 L33 20Z" fill="#ff2d78"/>
+        <path d="M7 20 L11 42 L29 42 L33 20Z" fill="url(#cg)"/>
+        <rect x="5" y="17" width="30" height="5" rx="2.5" fill="#cc0055"/>
+        <line x1="8"  y1="27" x2="32" y2="27" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <line x1="9"  y1="33" x2="31" y2="33" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <rect x="5"  y="9" width="12" height="9" fill="#00c4a0"/>
+        <ellipse cx="11" cy="9"  rx="6" ry="3" fill="#00e5bc"/>
+        <ellipse cx="11" cy="18" rx="6" ry="3" fill="#009977"/>
+        <rect x="14" y="5" width="12" height="13" fill="#ff6fa8"/>
+        <ellipse cx="20" cy="5"  rx="6" ry="3" fill="#ffaac8"/>
+        <ellipse cx="20" cy="18" rx="6" ry="3" fill="#cc0055" opacity=".5"/>
+        <rect x="23" y="9" width="12" height="9" fill="#e6b800"/>
+        <ellipse cx="29" cy="9"  rx="6" ry="3" fill="#ffe066"/>
+        <ellipse cx="29" cy="18" rx="6" ry="3" fill="#cc9900"/>
+        <path d="M10 12 Q14 8 18 12 Q22 16 26 12" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="rgba(0,0,0,.28)"/>
+            <stop offset="45%"  stop-color="rgba(255,255,255,.1)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,.28)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="hdr-name">SHAKE N ROLLS</div>
+
+  </header>
+
+  <!-- ══ TICKER ══ -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ti">ROLLED FRESH EVERY ORDER — WATCH IT MADE</div>
+      <div class="ti">ROYAL OREO — <span>$9.99</span></div>
+      <div class="ti">KHOYA GULAB JAMUN — <span>$11.49</span></div>
+      <div class="ti">BISCOFF CRUNCH — <em>MOST LOVED</em></div>
+      <div class="ti">RED VELVET CHEESECAKE — <span>$12.99</span></div>
+      <div class="ti">LIMITED DROP — GOLDEN FERRERO &amp; UBE CREAM DREAM</div>
+      <div class="ti">MATCHA ZEN — <span>$10.99</span></div>
+      <div class="ti">ADD-ONS AVAILABLE — WHIPPED CREAM &amp; SIGNATURE DRIZZLE</div>
+      <!-- dupe -->
+      <div class="ti">ROLLED FRESH EVERY ORDER — WATCH IT MADE</div>
+      <div class="ti">ROYAL OREO — <span>$9.99</span></div>
+      <div class="ti">KHOYA GULAB JAMUN — <span>$11.49</span></div>
+      <div class="ti">BISCOFF CRUNCH — <em>MOST LOVED</em></div>
+      <div class="ti">RED VELVET CHEESECAKE — <span>$12.99</span></div>
+      <div class="ti">LIMITED DROP — GOLDEN FERRERO &amp; UBE CREAM DREAM</div>
+      <div class="ti">MATCHA ZEN — <span>$10.99</span></div>
+      <div class="ti">ADD-ONS AVAILABLE — WHIPPED CREAM &amp; SIGNATURE DRIZZLE</div>
+    </div>
+  </div>
+
+  <!-- ══ FEATURE BAR ══ -->
+  <div class="feat-wrap">
+    <div class="feat-bar">
+
+      <div class="f-badge">
+        <svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 20 L11 42 L29 42 L33 20Z" fill="#febfd4"/>
+          <rect x="5" y="17" width="30" height="5" rx="2.5" fill="rgba(255,255,255,.4)"/>
+          <rect x="5"  y="9"  width="12" height="9" fill="#00e5bc"/>
+          <ellipse cx="11" cy="9"  rx="6" ry="3" fill="#adfff0"/>
+          <ellipse cx="11" cy="18" rx="6" ry="3" fill="#009977"/>
+          <rect x="14" y="5"  width="12" height="13" fill="#ffaac8"/>
+          <ellipse cx="20" cy="5"  rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="20" cy="18" rx="6" ry="3" fill="#ff6fa8" opacity=".6"/>
+          <rect x="23" y="9"  width="12" height="9" fill="#ffe066"/>
+          <ellipse cx="29" cy="9"  rx="6" ry="3" fill="#fff8cc"/>
+          <ellipse cx="29" cy="18" rx="6" ry="3" fill="#cc9900"/>
+        </svg>
+        MADE FRESH TO ORDER
+      </div>
+
+      <div class="f-title">ROLLED ICE CREAM MENU</div>
+
+      <div class="f-from">
+        <div class="f-from-lbl">STARTING FROM</div>
+        <div class="f-from-price"><sup>$</sup>9<span style="color:var(--pinksm)">.99</span></div>
+      </div>
+
+      <!-- Legend with large coloured dots -->
+      <div class="f-legend">
+        <div class="leg-row">
+          <div class="leg-dot" style="background:var(--gold);box-shadow:0 0 10px var(--gold)"></div>
+          BESTSELLER
+          <div class="leg-dot" style="background:var(--pink);box-shadow:0 0 10px var(--pink);margin-left:18px"></div>
+          MOST LOVED
+        </div>
+        <div class="leg-row">
+          <div class="leg-dot" style="background:var(--purple);box-shadow:0 0 10px var(--purple)"></div>
+          PREMIUM
+          <div class="leg-dot" style="background:var(--cc-limited);box-shadow:0 0 10px var(--cc-limited);margin-left:18px"></div>
+          LIMITED
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ 3-COLUMN GRID ══ -->
+  <div class="grid">
+
+    <!-- ── COL 1 : Classic Craves (4) + Fresh Fusion (5) ── -->
+    <div class="col">
+      <div class="chdr">
+        <div class="cico col-1-icon"><div class="cico-diamond"></div></div>
+        <div class="cttl">CLASSICS &amp; FRESH</div>
+        <div class="cln"></div>
+      </div>
+
+      <!-- Classic Craves : flex:4 (4 items) -->
+      <div class="csect cat-classic" style="flex:4">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-classic)"></span>
+            CLASSIC CRAVES
+          </div>
+          <span class="slbl-price">$9.99</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Royal Oreo
+                <span class="tg tg-best">BESTSELLER</span>
+                <span class="tg tg-prem">PREMIUM</span>
+              </div>
+              <div class="ic-d">Ice cream base · Crushed Oreo cookies · Chocolate drizzle · Chocolate sticks</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Peanut Butter Rush</div>
+              <div class="ic-d">Ice cream base · Peanut butter · Peanut butter cups · M&amp;M's · Chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Blond Brownie</div>
+              <div class="ic-d">Ice cream base · Soft brownie chunks · Chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">KitKat Crush</div>
+              <div class="ic-d">Ice cream base · KitKat pieces · Chocolate drizzle</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sect-gap"></div>
+
+      <!-- Fresh Fusion : flex:5 (5 items) -->
+      <div class="csect cat-fusion" style="flex:5">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-fusion)"></span>
+            FRESH FUSION
+          </div>
+          <span class="slbl-price">$10.99</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Mango Madness</div>
+              <div class="ic-d">Ice cream base · Mango chunks · Mango sauce</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Strawberry Bliss</div>
+              <div class="ic-d">Ice cream base · Fresh strawberries · Strawberry drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Straworeo</div>
+              <div class="ic-d">Ice cream base · Strawberries · Oreo cookies · Strawberry &amp; chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Monkey N' Around</div>
+              <div class="ic-d">Ice cream base · Fresh banana slices · Chocolate drizzle · Chocolate sticks</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Matcha Zen <span class="tg tg-new">NEW</span></div>
+              <div class="ic-d">Ice cream base · Ceremonial matcha · Choice of sauce</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COL 2 : Loaded Indulgence (3) + Royal Desi Signatures (4) ── -->
+    <div class="col">
+      <div class="chdr">
+        <div class="cico col-2-icon"><div class="cico-circle"></div></div>
+        <div class="cttl">LOADED &amp; DESI</div>
+        <div class="cln"></div>
+      </div>
+
+      <!-- Loaded Indulgence : flex:3 -->
+      <div class="csect cat-loaded" style="flex:3">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-loaded)"></span>
+            LOADED INDULGENCE
+          </div>
+          <span class="slbl-price">$10.99</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Biscoff Crunch <span class="tg tg-loved">MOST LOVED</span></div>
+              <div class="ic-d">Ice cream base · Biscoff spread · Biscoff biscuits</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Cookie Monster Overload</div>
+              <div class="ic-d">Ice cream base · Chocolate chip cookie · Chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Campfire S'more Please</div>
+              <div class="ic-d">Ice cream base · Graham crackers · Marshmallows · Chocolate drizzle</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sect-gap"></div>
+
+      <!-- Royal Desi Signatures : flex:4 -->
+      <div class="csect cat-desi" style="flex:4">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-desi)"></span>
+            ROYAL DESI SIGNATURES
+          </div>
+          <span class="slbl-price">$11.49</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Khoya Gulab
+                <span class="tg tg-best">BESTSELLER</span>
+                <span class="tg tg-prem">PREMIUM</span>
+              </div>
+              <div class="ic-d">Ice cream base · Gulab jamun · Nuts · Sweet cream drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Golden Swirl (Jalebi)</div>
+              <div class="ic-d">Ice cream base · Jalebi · Nuts · Sweet cream drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Floral Fusion (Gulkand)</div>
+              <div class="ic-d">Ice cream base · Gulkand · Nuts · Sweet cream drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Shahi Ras Malai</div>
+              <div class="ic-d">Ice cream base · Ras malai · Nuts · Sweet cream drizzle</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COL 3 : Premium (2) + Specials (2) + Limited Drop (2) ── -->
+    <div class="col">
+      <div class="chdr">
+        <div class="cico col-3-icon"><div class="cico-diamond"></div></div>
+        <div class="cttl">PREMIUM &amp; SPECIALS</div>
+        <div class="cln"></div>
+      </div>
+
+      <!-- Premium Picks : flex:2 -->
+      <div class="csect cat-premium" style="flex:2">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-premium)"></span>
+            PREMIUM PICKS
+          </div>
+          <span class="slbl-price">$11.99</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Pistachio Perfection <span class="tg tg-prem">PREMIUM</span></div>
+              <div class="ic-d">Ice cream base · Roasted pistachios · Pistachio cream</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Milkcake Delight</div>
+              <div class="ic-d">Ice cream base · Milk cake · Nuts · Sweet cream drizzle</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sect-gap"></div>
+
+      <!-- Specials : flex:2 -->
+      <div class="csect cat-specials" style="flex:2">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-specials)"></span>
+            SPECIALS
+          </div>
+          <span class="slbl-price">$12.99</span>
+        </div>
+        <div class="items-group">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Red Velvet Cheesecake
+                <span class="tg tg-best">BESTSELLER</span>
+                <span class="tg tg-prem">PREMIUM</span>
+              </div>
+              <div class="ic-d">Ice cream base · Red velvet cake · Cheesecake bites · White chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Fruit Fiesta</div>
+              <div class="ic-d">Ice cream base · Mixed fresh seasonal fruits · Fruit sauce</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sect-gap"></div>
+
+      <!-- Limited Drop : flex:2.8 -->
+      <div class="csect cat-limited" style="flex:2.8">
+        <div class="slbl">
+          <div class="slbl-left">
+            <span class="slbl-bar" style="background:var(--cc-limited)"></span>
+            LIMITED DROP
+          </div>
+          <span class="slbl-price">$10.99</span>
+        </div>
+        <div class="items-group" style="flex:2">
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">Golden Ferrero <span class="tg tg-lim">LIMITED</span></div>
+              <div class="ic-d">Ice cream base · Ferrero Rocher · Nutella · Chocolate drizzle</div>
+            </div>
+          </div>
+
+          <div class="ic">
+            <div class="ic-l">
+              <div class="ic-n">The Ube Cream Dream <span class="tg tg-lim">LIMITED</span></div>
+              <div class="ic-d">Ice cream base · Purple yam · Coconut flakes</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Add-ons block -->
+        <div style="flex:1;display:flex;align-items:center;padding-top:10px;">
+          <div style="
+            width:100%;
+            background:linear-gradient(135deg,rgba(0,229,255,.07),rgba(176,106,255,.06));
+            border:1.5px solid rgba(0,229,255,.22);
+            border-radius:12px; padding:14px 22px; text-align:center;
+          ">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--teal);">
+              ADD-ONS AVAILABLE
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--muted);margin-top:6px;line-height:1.5;">
+              Whipped cream &amp; signature drizzle — add to any roll
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <div class="ftr-wrap">
+    <div class="ftr">
+      <div>
+        <div class="f-url">SHAKENROLLS.CA</div>
+        <div class="f-tel"><b>431-996-7655</b></div>
+      </div>
+      <div class="f-mid">
+        <div class="f-brand">SHAKE N ROLLS</div>
+        <div class="f-addr">245 LUCAS AVE UNIT 101 &nbsp;·&nbsp; WINNIPEG, MB</div>
+      </div>
+      <div class="f-hrs">
+        <div><b>OPEN DAILY</b> &nbsp; 2:00 PM – 12:00 AM</div>
+        <div><em>DINE IN &nbsp;·&nbsp; TAKEOUT</em></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
