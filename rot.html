@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shake N Rolls – Screen 1</title>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:1920px; height:1080px;
+    overflow:hidden;
+    background:#0a0510;
+    font-family:sans-serif;
+  }
+
+  /* ── SLIDES ── */
+  .slide {
+    position:absolute; top:0; left:0;
+    width:1920px; height:1080px;
+    opacity:0;
+    transition:opacity 1.2s ease-in-out;
+    pointer-events:none;
+  }
+
+  .slide.active {
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .slide iframe {
+    width:1920px; height:1080px;
+    border:none; display:block;
+  }
+
+  /* ── INDICATOR DOTS ── */
+  .dots {
+    position:fixed; bottom:22px; left:50%;
+    transform:translateX(-50%);
+    display:flex; align-items:center; gap:12px;
+    z-index:9999;
+  }
+
+  .dot-label {
+    font-size:11px; font-weight:700; letter-spacing:2px;
+    color:rgba(255,255,255,.3); text-transform:uppercase;
+    user-select:none;
+  }
+
+  .dot {
+    width:12px; height:12px; border-radius:50%;
+    background:rgba(255,255,255,.2);
+    border:1.5px solid rgba(255,255,255,.3);
+    transition:all 0.4s ease;
+  }
+
+  .dot.active {
+    background:#ff2d78;
+    border-color:#ff6fa8;
+    box-shadow:0 0 14px rgba(255,45,120,.8);
+    transform:scale(1.35);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress {
+    position:fixed; bottom:0; left:0;
+    width:100%; height:3px;
+    background:rgba(255,255,255,.06);
+    z-index:9998; overflow:hidden;
+  }
+
+  .progress-fill {
+    height:100%; width:100%;
+    background:linear-gradient(90deg,#ff2d78,#ffcc00,#00c6ff,#ff2d78);
+    background-size:300%;
+    transform-origin:left center;
+    transform:scaleX(1);
+    animation:pglow 3s linear infinite;
+  }
+
+  @keyframes pglow {
+    0%   { background-position:0% }
+    100% { background-position:300% }
+  }
+</style>
+</head>
+<body>
+
+  <!-- SLIDE 0: HOT FOOD MENU -->
+  <div class="slide active" id="slide-0">
+    <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=1920&quot;>
+<title>Shake N Rolls – Hot Food Menu</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Nunito:wght@700;800;900&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+  :root {
+    /* White background palette */
+    --bg:       #ffffff;
+    --dark:     #1e0a30;   /* deep plum — primary text */
+    --mid:      #5a3a78;   /* medium purple — descriptions */
+    --pink:     #e8005a;   /* deepened pink for white bg */
+    --pinksm:   #ff2d78;
+    --sky:      #0077aa;   /* darkened sky blue */
+    --gold:     #b07000;   /* darkened amber/gold */
+    --gold2:    #d08800;
+    --green:    #007a40;   /* darkened green */
+    --card:     rgba(0,0,0,0.03);
+    --bdr:      rgba(0,0,0,0.09);
+
+    /* Vivid display colors (kept bright for accents) */
+    --gold-v:   #ffcc00;
+    --green-v:  #00e676;
+    --sky-v:    #00c6ff;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:1920px; height:1080px;
+    overflow:hidden;
+    background:var(--bg);
+    font-family:'Nunito', sans-serif;
+    color:var(--dark);
+  }
+
+  .page {
+    width:1920px; height:1080px;
+    display:flex; flex-direction:column;
+  }
+
+  /* ── POWER BAR — slow-running ticker strip ── */
+  .power-wrap { padding:12px 44px 0; flex-shrink:0; }
+
+  .power-bar {
+    height:90px; border-radius:14px;
+    background:linear-gradient(100deg,#2a0a30 0%,#1c0828 40%,#0b1826 100%);
+    border:2px solid var(--pinksm);
+    box-shadow:0 4px 32px rgba(232,0,90,.25), 0 2px 0 rgba(255,255,255,.08) inset;
+    overflow:hidden;
+    display:flex; align-items:center;
+    position:relative;
+  }
+
+  /* Animated gradient border glow */
+  .power-bar::before {
+    content:''; position:absolute; inset:-2px; border-radius:16px;
+    background:linear-gradient(90deg,#e8005a,var(--sky-v),#ffcc00,#ff6fa8,#e8005a);
+    background-size:400%; animation:bm 5s linear infinite; z-index:-1;
+  }
+
+  @keyframes bm { 0%{background-position:0% 50%} 100%{background-position:400% 50%} }
+
+  /* Slow-running inner content */
+  .pw-run {
+    display:flex; width:max-content; align-items:center;
+    animation:pw-scroll 55s linear infinite;
+  }
+
+  @keyframes pw-scroll {
+    0%   { transform:translateX(0); }
+    100% { transform:translateX(-50%); }
+  }
+
+  /* Each item block inside the scrolling bar */
+  .pw-item {
+    display:flex; align-items:center; gap:32px;
+    padding:0 72px; white-space:nowrap; flex-shrink:0;
+  }
+
+  .p-badge {
+    background:linear-gradient(90deg,#ffcc00,#ff9900); color:#000;
+    font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:3px;
+    padding:8px 26px; border-radius:50px;
+    box-shadow:0 4px 16px rgba(255,204,0,.5);
+    white-space:nowrap; flex-shrink:0;
+  }
+
+  .p-name {
+    font-family:'Bebas Neue',sans-serif; font-size:60px; letter-spacing:3px;
+    background:linear-gradient(90deg,#fff,#ffcc00);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    flex-shrink:0;
+  }
+
+  .p-desc { display:flex; align-items:center; gap:16px; font-size:20px; font-weight:800; color:#f0d0e0; }
+  .p-dot  { width:5px; height:5px; background:#ff6fa8; border-radius:50%; flex-shrink:0; }
+
+  .p-price {
+    font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:1;
+    color:#ffcc00; text-shadow:0 0 30px rgba(255,204,0,.7); flex-shrink:0;
+  }
+  .p-price sup { font-size:32px; vertical-align:super; }
+
+  .p-val { font-size:15px; color:#00e676; font-weight:900; letter-spacing:2px; text-transform:uppercase; flex-shrink:0; }
+
+  /* Separator diamond between repeated blocks */
+  .pw-sep {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px; color:rgba(255,255,255,.25);
+    flex-shrink:0;
+  }
+
+  /* ── 3-COLUMN GRID ── */
+  .grid {
+    flex:1; min-height:0;
+    display:grid; grid-template-columns:1fr 1fr 1.08fr;
+    padding:14px 44px 14px; gap:0;
+  }
+  .col {
+    display:flex; flex-direction:column;
+    padding:0 18px; overflow:hidden;
+    border-right:2px solid rgba(0,0,0,0.07);
+  }
+  .col:first-child { padding-left:0; }
+  .col:last-child  { padding-right:0; border-right:none; }
+
+  /* Column header */
+  .chdr {
+    display:flex; align-items:center; gap:14px;
+    padding-bottom:10px; margin-bottom:12px;
+    border-bottom:3px solid; flex-shrink:0;
+  }
+  .cico { width:30px; height:30px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .cico-circle  { width:24px; height:24px; border-radius:50%; border:2.5px solid currentColor; }
+  .cico-diamond { width:22px; height:22px; transform:rotate(45deg); border:2.5px solid currentColor; }
+  .cttl { font-family:'Bebas Neue',sans-serif; font-size:46px; letter-spacing:5px; line-height:1; }
+  .cln  { flex:1; height:2px; }
+
+  /* BURGERS — blazing red/crimson (appetite-stimulating) */
+  .col.burg .chdr { border-color:rgba(200,20,0,.55); }
+  .col.burg .cttl { color:#cc1800; }
+  .col.burg .cico { color:#cc1800; }
+  .col.burg .cln  { background:linear-gradient(90deg,rgba(200,20,0,.5),transparent); }
+
+  /* WEDGES — golden amber (sizzling fries, warm gravy) */
+  .col.side .chdr { border-color:rgba(185,85,0,.55); }
+  .col.side .cttl { color:#b85500; }
+  .col.side .cico { color:#b85500; }
+  .col.side .cln  { background:linear-gradient(90deg,rgba(185,85,0,.5),transparent); }
+
+  /* COMBOS — deep pink */
+  .col.comb .chdr { border-color:rgba(232,0,90,.45); }
+  .col.comb .cttl { color:#cc0044; }
+  .col.comb .cico { color:#cc0044; }
+  .col.comb .cln  { background:linear-gradient(90deg,rgba(232,0,90,.4),transparent); }
+
+  /* ── SUB-LABELS ── */
+  .slbl {
+    display:flex; align-items:center; gap:10px;
+    border-radius:8px; padding:6px 16px;
+    margin-bottom:8px; flex-shrink:0;
+    font-family:'Nunito',sans-serif;
+    font-size:18px; font-weight:900;
+    letter-spacing:2px; text-transform:uppercase;
+  }
+  .slbl-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+  /* CHICKEN — fiery red (hunger-inducing) */
+  .slbl-chicken {
+    background:rgba(200,20,0,.07);
+    border:2px solid #cc1800; color:#aa1200;
+  }
+  .slbl-chicken .slbl-dot { background:#cc1800; }
+
+  /* VEG — forest green */
+  .slbl-veg {
+    background:rgba(0,122,64,.08);
+    border:2px solid #007a40; color:#005a2e;
+  }
+  .slbl-veg .slbl-dot { background:#007a40; }
+
+  .gap8 { height:6px; flex-shrink:0; }
+
+  /* ── ITEMS GROUP ── */
+  .items-group { display:flex; flex-direction:column; gap:8px; overflow:hidden; }
+
+  /* Item card */
+  .ic {
+    flex:1; min-height:0;
+    display:flex; align-items:center;
+    justify-content:space-between; gap:20px;
+    background:var(--card); border:1px solid var(--bdr);
+    border-radius:13px; padding:14px 24px 14px 28px;
+    position:relative; overflow:hidden;
+  }
+  .ic::before {
+    content:''; position:absolute; top:0; left:0; width:5px; height:100%;
+    border-radius:13px 0 0 13px;
+  }
+  .col.burg .ic::before           { background:linear-gradient(180deg,#e02000,#991000); }
+  .col.side .ic.veg::before       { background:linear-gradient(180deg,#007a40,#004d28); }
+  .col.side .ic:not(.veg)::before { background:linear-gradient(180deg,#c06000,#7a3800); }
+
+  /* Burger cards — warm red tint, makes food look sizzling */
+  .col.burg .ic {
+    background:rgba(220,40,0,.04);
+    border-color:rgba(200,30,0,.16);
+  }
+
+  /* Wedges cards — warm amber tint, like golden fries */
+  .col.side .ic:not(.veg) {
+    background:rgba(185,80,0,.04);
+    border-color:rgba(180,80,0,.16);
+  }
+
+  /* Veg card tint — stays fresh green */
+  .col.burg .ic.veg { background:rgba(0,122,64,.04); border-color:rgba(0,122,64,.18); }
+
+  /* BURGERS — item name in deep crimson, descriptions in warm spice brown */
+  .col.burg .ic-n { color:#8a1200; }
+  .col.burg .ic-d { color:#7a3800; }
+  .col.burg .ic-p { color:#cc2000; }
+
+  /* VEG burgers — keep green for freshness */
+  .col.burg .ic.veg .ic-n { color:#004d28; }
+  .col.burg .ic.veg .ic-d { color:#2d5a3a; }
+  .col.burg .ic.veg .ic-p { color:#007a40; }
+
+  /* WEDGES — item name in deep warm brown, descriptions in golden tan */
+  .col.side .ic:not(.veg) .ic-n { color:#7a3500; }
+  .col.side .ic:not(.veg) .ic-d { color:#8a5200; }
+  .col.side .ic-p                { color:#b05500; }
+
+  /* WEDGES veg items — green */
+  .col.side .ic.veg .ic-n { color:#004d28; }
+  .col.side .ic.veg .ic-d { color:#2d5a3a; }
+  .col.side .ic.veg .ic-p { color:#007a40; }
+
+  .ic-l { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Item name — base style, overridden per column below */
+  .ic-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:46px; letter-spacing:2px; line-height:1.05;
+    color:var(--dark);
+    display:flex; align-items:center; flex-wrap:nowrap; gap:0;
+    white-space:nowrap; overflow:hidden;
+  }
+
+  /* Ingredients — base style, overridden per column below */
+  .ic-d {
+    font-size:21px; color:var(--mid);
+    font-weight:800; line-height:1.4; margin-top:6px;
+  }
+
+  /* Price — base style, overridden per column below */
+  .ic-p {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:44px; color:#b07000;
+    white-space:nowrap; flex-shrink:0;
+  }
+
+  /* Tags */
+  .tg {
+    display:inline-flex; align-items:center;
+    font-size:12px; font-weight:900; letter-spacing:1.5px;
+    padding:3px 10px; border-radius:5px; margin-left:8px;
+    vertical-align:middle; text-transform:uppercase; flex-shrink:0;
+  }
+  .th { background:linear-gradient(90deg,#cc1800,#ff4400); color:#fff; }  /* HOT — fiery red-orange */
+  .ts { background:linear-gradient(90deg,#880000,#cc1800); color:#fff; }  /* SPICY — deep red */
+  .tv { background:#007a40; color:#fff; }                                  /* VEG — green */
+  .tp { background:#005a28; color:#fff; }                                  /* PLANT — dark green */
+  .tf { background:linear-gradient(90deg,#b85500,#e07000); color:#fff; }  /* FAV — golden amber */
+
+  /* ── COMBOS ── */
+  .combos-flex { flex:1; min-height:0; display:flex; flex-direction:column; gap:9px; }
+
+  .cc {
+    flex:1; display:flex; align-items:center; gap:20px;
+    border-radius:14px; padding:0 26px;
+    position:relative; overflow:hidden;
+  }
+  .cc.roy { flex:1.45; }
+
+  .cc::before {
+    content:''; position:absolute; top:0; left:0; bottom:0; width:5px;
+    border-radius:14px 0 0 14px;
+  }
+  .cc.c1::before { background:linear-gradient(180deg,#0077aa,#004d77); }
+  .cc.c2::before { background:linear-gradient(180deg,#e8005a,#8a0030); }
+  .cc.c3::before { background:linear-gradient(180deg,#c07800,#7a4a00); }
+  .cc.c4::before { background:linear-gradient(180deg,#c07800,#e8005a,#0077aa); }
+
+  /* Card backgrounds — light tints on white */
+  .cc.c1 { background:rgba(0,119,170,.06); border:1.5px solid rgba(0,119,170,.22); }
+  .cc.c2 { background:rgba(232,0,90,.06);  border:1.5px solid rgba(232,0,90,.22); }
+  .cc.c3 { background:rgba(192,120,0,.06); border:1.5px solid rgba(192,120,0,.22); }
+  .cc.c4 {
+    background:linear-gradient(100deg,rgba(192,120,0,.07),rgba(232,0,90,.05),rgba(0,119,170,.04));
+    border:2px solid rgba(192,120,0,.35);
+    box-shadow:0 4px 24px rgba(192,120,0,.12), 0 2px 12px rgba(232,0,90,.08);
+  }
+
+  /* CSS icon circle */
+  .cc-ico {
+    width:52px; height:52px; flex-shrink:0; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif; font-size:24px;
+  }
+  .cc.c1 .cc-ico { border:2.5px solid #0077aa; color:#0077aa; background:rgba(0,119,170,.08); }
+  .cc.c2 .cc-ico { border:2.5px solid #e8005a; color:#e8005a; background:rgba(232,0,90,.08); }
+  .cc.c3 .cc-ico { border:2.5px solid #c07800; color:#c07800; background:rgba(192,120,0,.08); }
+  .cc.c4 .cc-ico { width:62px; height:62px; font-size:28px; border:2.5px solid #c07800; color:#c07800; background:rgba(192,120,0,.10); box-shadow:0 0 16px rgba(192,120,0,.25); }
+
+  .cc-info { flex:1; min-width:0; }
+
+  /* Combo name */
+  .cc-name { font-family:'Bebas Neue',sans-serif; font-size:46px; letter-spacing:2px; line-height:1; }
+  .cc.c1 .cc-name { color:#005f88; }
+  .cc.c2 .cc-name { color:#cc0044; }
+  .cc.c3 .cc-name { color:#8a5500; }
+  .cc.c4 .cc-name {
+    font-size:54px;
+    background:linear-gradient(90deg,#c07800,#e8005a,#0077aa);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+
+  /* Combo items */
+  .cc-items { font-size:20px; color:var(--mid); font-weight:800; margin-top:7px; line-height:1.4; }
+  .cc.c4 .cc-items { color:#3a2050; font-size:21px; }
+
+  .cc-fam { font-size:14px; font-weight:900; letter-spacing:2px; color:#cc0044; margin-top:5px; text-transform:uppercase; }
+
+  .cc-r { text-align:right; flex-shrink:0; }
+
+  /* Combo price */
+  .cc-price { font-family:'Bebas Neue',sans-serif; font-size:38px; line-height:1; }
+  .cc.c1 .cc-price { color:#0077aa; }
+  .cc.c2 .cc-price { color:#cc0044; }
+  .cc.c3 .cc-price { color:#8a5500; }
+  .cc.c4 .cc-price { font-size:46px; color:#8a5500; }
+
+  /* Save label */
+  .cc-save { font-size:12px; font-weight:900; letter-spacing:1.5px; color:#007a40; text-transform:uppercase; margin-top:3px; }
+  .cc.c4 .cc-save { color:#8a5500; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+
+  <!-- POWER COMBO — slow-running ticker bar -->
+  <div class=&quot;power-wrap&quot;>
+    <div class=&quot;power-bar&quot;>
+      <div class=&quot;pw-run&quot;>
+
+        <!-- Block 1 -->
+        <div class=&quot;pw-item&quot;>
+          <div class=&quot;p-badge&quot;>TODAY'S BEST DEAL</div>
+          <div class=&quot;p-name&quot;>POWER COMBO</div>
+          <div class=&quot;p-desc&quot;>
+            <span>Any Burger</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span>Classic Wedges</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span>Soft Drink</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span style=&quot;color:#aaffcc;font-weight:900;&quot;>Mix &amp;amp; Match YOUR Choice</span>
+          </div>
+          <div class=&quot;p-price&quot;><sup>$</sup>16<span style=&quot;color:#ff9999&quot;>.99</span></div>
+          <div class=&quot;p-val&quot;>BEST VALUE</div>
+        </div>
+
+        <div class=&quot;pw-sep&quot;>✦</div>
+
+        <!-- Block 2 — duplicate for seamless loop -->
+        <div class=&quot;pw-item&quot;>
+          <div class=&quot;p-badge&quot;>TODAY'S BEST DEAL</div>
+          <div class=&quot;p-name&quot;>POWER COMBO</div>
+          <div class=&quot;p-desc&quot;>
+            <span>Any Burger</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span>Classic Wedges</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span>Soft Drink</span>
+            <div class=&quot;p-dot&quot;></div>
+            <span style=&quot;color:#aaffcc;font-weight:900;&quot;>Mix &amp;amp; Match YOUR Choice</span>
+          </div>
+          <div class=&quot;p-price&quot;><sup>$</sup>16<span style=&quot;color:#ff9999&quot;>.99</span></div>
+          <div class=&quot;p-val&quot;>BEST VALUE</div>
+        </div>
+
+        <div class=&quot;pw-sep&quot;>✦</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-COLUMN GRID -->
+  <div class=&quot;grid&quot;>
+
+    <!-- COL 1 — BURGERS -->
+    <div class=&quot;col burg&quot;>
+      <div class=&quot;chdr&quot;>
+        <div class=&quot;cico&quot;><div class=&quot;cico-circle&quot;></div></div>
+        <div class=&quot;cttl&quot;>BURGERS</div>
+        <div class=&quot;cln&quot;></div>
+      </div>
+
+      <div class=&quot;slbl slbl-chicken&quot;>
+        <div class=&quot;slbl-dot&quot;></div>
+        CHICKEN BURGERS
+      </div>
+
+      <div class=&quot;items-group&quot; style=&quot;flex:3&quot;>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Butter Chicken Blast <span class=&quot;tg th&quot;>HOT</span></div>
+            <div class=&quot;ic-d&quot;>Grilled chicken breast &amp;nbsp;·&amp;nbsp; Butter chicken sauce &amp;nbsp;·&amp;nbsp; Lettuce &amp;nbsp;·&amp;nbsp; Tomato &amp;nbsp;·&amp;nbsp; Onion &amp;nbsp;·&amp;nbsp; Creamy mayo</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$12.49</div>
+        </div>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Tandoori Twist</div>
+            <div class=&quot;ic-d&quot;>Tandoori marinated chicken breast &amp;nbsp;·&amp;nbsp; Mint mayo &amp;nbsp;·&amp;nbsp; Lettuce &amp;nbsp;·&amp;nbsp; Tomato &amp;nbsp;·&amp;nbsp; Onion</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$11.99</div>
+        </div>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Nashville Heat <span class=&quot;tg ts&quot;>SPICY</span></div>
+            <div class=&quot;ic-d&quot;>Crispy grilled chicken &amp;nbsp;·&amp;nbsp; Nashville hot sauce &amp;nbsp;·&amp;nbsp; Pickles &amp;nbsp;·&amp;nbsp; Signature slaw</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$10.99</div>
+        </div>
+      </div>
+
+      <div class=&quot;gap8&quot;></div>
+
+      <div class=&quot;slbl slbl-veg&quot;>
+        <div class=&quot;slbl-dot&quot;></div>
+        VEGETARIAN BURGERS
+      </div>
+
+      <div class=&quot;items-group&quot; style=&quot;flex:2&quot;>
+        <div class=&quot;ic veg&quot; style=&quot;border-color:rgba(0,122,64,.18)&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Midnight Bean <span class=&quot;tg tv&quot;>VEG</span></div>
+            <div class=&quot;ic-d&quot;>Black bean patty &amp;nbsp;·&amp;nbsp; Lettuce &amp;nbsp;·&amp;nbsp; Tomato &amp;nbsp;·&amp;nbsp; Onion &amp;nbsp;·&amp;nbsp; Chipotle sauce &amp;nbsp;·&amp;nbsp; Mint mayo</div>
+          </div>
+          <div class=&quot;ic-p&quot; style=&quot;color:#007a40&quot;>$10.49</div>
+        </div>
+        <div class=&quot;ic veg&quot; style=&quot;border-color:rgba(0,90,40,.18)&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Beyond Classic <span class=&quot;tg tp&quot;>PLANT</span></div>
+            <div class=&quot;ic-d&quot;>Beyond meat patty &amp;nbsp;·&amp;nbsp; Lettuce &amp;nbsp;·&amp;nbsp; Tomato &amp;nbsp;·&amp;nbsp; Onion &amp;nbsp;·&amp;nbsp; Chipotle sauce</div>
+          </div>
+          <div class=&quot;ic-p&quot; style=&quot;color:#007a40&quot;>$10.99</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 2 — WEDGES &amp; POUTINE -->
+    <div class=&quot;col side&quot;>
+      <div class=&quot;chdr&quot;>
+        <div class=&quot;cico&quot;><div class=&quot;cico-diamond&quot;></div></div>
+        <div class=&quot;cttl&quot;>WEDGES &amp;amp; POUTINE</div>
+        <div class=&quot;cln&quot;></div>
+      </div>
+
+      <div class=&quot;items-group&quot; style=&quot;flex:1&quot;>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Classic Wedges</div>
+            <div class=&quot;ic-d&quot;>Crispy seasoned potato wedges &amp;nbsp;·&amp;nbsp; Perfectly golden every time</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$4.99</div>
+        </div>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Classic Poutine</div>
+            <div class=&quot;ic-d&quot;>Potato wedges &amp;nbsp;·&amp;nbsp; Squeaky cheese curds &amp;nbsp;·&amp;nbsp; Rich savoury gravy</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$7.99</div>
+        </div>
+        <div class=&quot;ic veg&quot; style=&quot;border-color:rgba(0,122,64,.18)&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Butter Veg Poutine <span class=&quot;tg tv&quot;>VEG</span></div>
+            <div class=&quot;ic-d&quot;>Potato wedges &amp;nbsp;·&amp;nbsp; Cheese curds &amp;nbsp;·&amp;nbsp; Creamy butter gravy &amp;nbsp;·&amp;nbsp; Mixed veggies</div>
+          </div>
+          <div class=&quot;ic-p&quot; style=&quot;color:#007a40&quot;>$8.99</div>
+        </div>
+        <div class=&quot;ic&quot;>
+          <div class=&quot;ic-l&quot;>
+            <div class=&quot;ic-n&quot;>Butter Chicken Poutine <span class=&quot;tg tf&quot;>FAV</span></div>
+            <div class=&quot;ic-d&quot;>Potato wedges &amp;nbsp;·&amp;nbsp; Cheese curds &amp;nbsp;·&amp;nbsp; Butter chicken gravy &amp;nbsp;·&amp;nbsp; Mixed veggies</div>
+          </div>
+          <div class=&quot;ic-p&quot;>$9.99</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 3 — COMBO DEALS -->
+    <div class=&quot;col comb&quot;>
+      <div class=&quot;chdr&quot;>
+        <div class=&quot;cico&quot;><div class=&quot;cico-circle&quot;></div></div>
+        <div class=&quot;cttl&quot;>COMBO DEALS</div>
+        <div class=&quot;cln&quot;></div>
+      </div>
+
+      <div class=&quot;combos-flex&quot;>
+        <div class=&quot;cc c1&quot;>
+          <div class=&quot;cc-ico&quot;>C1</div>
+          <div class=&quot;cc-info&quot;>
+            <div class=&quot;cc-name&quot;>CLASSIC COMBO</div>
+            <div class=&quot;cc-items&quot;>Any Burger &amp;nbsp;+&amp;nbsp; Classic Wedges &amp;nbsp;+&amp;nbsp; Any Smooth Sips or Drink</div>
+          </div>
+          <div class=&quot;cc-r&quot;>
+            <div class=&quot;cc-price&quot;>$18.99</div>
+            <div class=&quot;cc-save&quot;>GREAT VALUE</div>
+          </div>
+        </div>
+
+        <div class=&quot;cc c2&quot;>
+          <div class=&quot;cc-ico&quot;>C2</div>
+          <div class=&quot;cc-info&quot;>
+            <div class=&quot;cc-name&quot;>SIGNATURE COMBO</div>
+            <div class=&quot;cc-items&quot;>Any Burger &amp;nbsp;+&amp;nbsp; Classic Poutine &amp;nbsp;+&amp;nbsp; Any Shake or Drink</div>
+          </div>
+          <div class=&quot;cc-r&quot;>
+            <div class=&quot;cc-price&quot;>$22.99</div>
+            <div class=&quot;cc-save&quot;>MOST POPULAR</div>
+          </div>
+        </div>
+
+        <div class=&quot;cc c3&quot;>
+          <div class=&quot;cc-ico&quot;>C3</div>
+          <div class=&quot;cc-info&quot;>
+            <div class=&quot;cc-name&quot;>INDULGENCE COMBO</div>
+            <div class=&quot;cc-items&quot;>Any Burger &amp;nbsp;+&amp;nbsp; Loaded Wedges &amp;nbsp;+&amp;nbsp; Any Shake or Drink &amp;nbsp;+&amp;nbsp; Ice Cream</div>
+          </div>
+          <div class=&quot;cc-r&quot;>
+            <div class=&quot;cc-price&quot;>$29.99</div>
+            <div class=&quot;cc-save&quot;>TREAT YOURSELF</div>
+          </div>
+        </div>
+
+        <div class=&quot;cc c4 roy&quot;>
+          <div class=&quot;cc-ico&quot;>C4</div>
+          <div class=&quot;cc-info&quot;>
+            <div class=&quot;cc-name&quot;>ROYAL FEAST COMBO</div>
+            <div class=&quot;cc-items&quot;>2 Burgers &amp;nbsp;+&amp;nbsp; Loaded Wedges &amp;nbsp;+&amp;nbsp; 2 Shakes &amp;nbsp;+&amp;nbsp; Ice Cream</div>
+            <div class=&quot;cc-fam&quot;>FAMILY &amp;nbsp;/&amp;nbsp; SHARING</div>
+          </div>
+          <div class=&quot;cc-r&quot;>
+            <div class=&quot;cc-price&quot;>$44.99</div>
+            <div class=&quot;cc-save&quot;>BEST DEAL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div>
+</body>
+</html>
+" title="Hot Food Menu" scrolling="no"></iframe>
+  </div>
+
+  <!-- SLIDE 1: SHAKES & DRINKS MENU -->
+  <div class="slide" id="slide-1">
+    <iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=1920&quot;>
+<title>Shake N Rolls – Shakes &amp; Drinks</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Nunito:wght@700;800;900&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+  :root {
+    --bg:   #ffffff;
+    --dark: #1a0820;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:1920px; height:1080px;
+    overflow:hidden;
+    background:var(--bg);
+    font-family:'Nunito', sans-serif;
+    color:var(--dark);
+  }
+
+  .page { width:1920px; height:1080px; display:flex; flex-direction:column; }
+
+  /* ══ TOP RUNNING STRIP — SKY BLUE ══ */
+  .top-strip {
+    height:64px; flex-shrink:0;
+    background:linear-gradient(90deg,#004488,#0088cc 12%,#00aaff 50%,#0088cc 88%,#004488);
+    border-bottom:4px solid #ffcc00;
+    overflow:hidden; display:flex; align-items:center;
+  }
+
+  .strip-run {
+    display:flex; width:max-content;
+    animation:srun 42s linear infinite; align-items:center;
+  }
+
+  @keyframes srun { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* Main text — SHAKES / MATCHA AND OTHER DRINKS */
+  .strip-item {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:38px; letter-spacing:11px; color:#fff;
+    text-shadow:0 0 20px rgba(255,255,255,.35), 0 2px 0 rgba(0,0,0,.3);
+    white-space:nowrap; padding:0 70px;
+  }
+
+  /* Sub text — (MADE WITH FRESH ICE CREAM BASE) — bigger, Nunito 900 bold */
+  .strip-item em {
+    font-family:'Nunito',sans-serif;
+    font-style:normal; font-size:28px; font-weight:900;
+    letter-spacing:3px; color:#fff;
+    text-shadow:0 0 16px rgba(255,255,255,.6);
+    margin-left:18px; vertical-align:middle;
+  }
+
+  .strip-sep { font-size:28px; color:rgba(255,255,255,.3); padding:0 14px; flex-shrink:0; }
+
+  /* ══ 3-COLUMN GRID ══ */
+  .grid {
+    flex:1; min-height:0;
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    padding:14px 44px 14px; gap:0;
+  }
+
+  .col {
+    display:flex; flex-direction:column;
+    padding:0 18px; overflow:hidden;
+    border-right:2px solid rgba(0,0,0,0.07);
+  }
+
+  .col:first-child { padding-left:0; }
+  .col:last-child  { padding-right:0; border-right:none; }
+
+  /* ── SECTION LABELS ── */
+  .slbl {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 18px; border-radius:9px;
+    margin-bottom:9px; flex-shrink:0;
+  }
+
+  .slbl-left {
+    display:flex; align-items:center; gap:11px;
+    font-family:'Nunito',sans-serif;
+    font-size:26px; font-weight:900;        /* BIGGER section label */
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  .slbl-bar { display:inline-block; width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+
+  /* Section price — BIGGER */
+  .slbl-price {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:44px; letter-spacing:1px;
+  }
+
+  /* Category colours */
+  .cat-smooth   .slbl { background:rgba(0,68,200,.08);   border:2px solid #0044cc; }
+  .cat-smooth   .slbl-left,.cat-smooth   .slbl-price { color:#003399; }
+
+  .cat-sig      .slbl { background:rgba(204,0,80,.08);   border:2px solid #cc0055; }
+  .cat-sig      .slbl-left,.cat-sig      .slbl-price { color:#990033; }
+
+  .cat-deluxe   .slbl { background:rgba(100,0,180,.08);  border:2px solid #6600bb; }
+  .cat-deluxe   .slbl-left,.cat-deluxe   .slbl-price { color:#4a0088; }
+
+  .cat-imperial .slbl { background:rgba(160,88,0,.09);   border:2px solid #aa5800; }
+  .cat-imperial .slbl-left,.cat-imperial .slbl-price { color:#7a3c00; }
+
+  .cat-matcha   .slbl { background:rgba(0,110,40,.08);   border:2px solid #006622; }
+  .cat-matcha   .slbl-left,.cat-matcha   .slbl-price { color:#004415; }
+
+  /* SEASONAL — vivid orange */
+  .cat-seasonal .slbl { background:rgba(210,90,0,.08);   border:2px solid #d05500; }
+  .cat-seasonal .slbl-left,.cat-seasonal .slbl-price { color:#a03c00; }
+
+  /* EXTRAS — slate/dark for neutral drinks */
+  .cat-extras   .slbl { background:rgba(40,80,140,.08);  border:2px solid #284880; }
+  .cat-extras   .slbl-left,.cat-extras   .slbl-price { color:#1a3060; }
+
+  .sect-gap { height:8px; flex-shrink:0; }
+
+  /* ── ITEMS GROUP ── */
+  .items-group { flex:1; display:flex; flex-direction:column; gap:7px; overflow:hidden; }
+
+  /* Item card */
+  .ic {
+    flex:1; min-height:0;
+    display:flex; align-items:center;
+    justify-content:space-between; gap:18px;
+    border-radius:12px; padding:0 22px 0 26px;
+    position:relative; overflow:hidden;
+  }
+
+  .ic::before {
+    content:''; position:absolute; top:0; left:0; width:5px; height:100%;
+    border-radius:12px 0 0 12px;
+  }
+
+  /* Per-category card styles */
+  .cat-smooth   .ic { background:rgba(0,68,200,.05);   border:1px solid rgba(0,68,200,.20); }
+  .cat-smooth   .ic::before { background:linear-gradient(180deg,#0044cc,#002288); }
+  .cat-smooth   .ic-n { color:#001a55; }
+  .cat-smooth   .ic-d { color:#2a3d7a; }
+  .cat-smooth   .ic-p { color:#0044cc; }
+
+  .cat-sig      .ic { background:rgba(204,0,80,.05);   border:1px solid rgba(204,0,80,.20); }
+  .cat-sig      .ic::before { background:linear-gradient(180deg,#cc0055,#880033); }
+  .cat-sig      .ic-n { color:#660022; }
+  .cat-sig      .ic-d { color:#8a2244; }
+  .cat-sig      .ic-p { color:#cc0055; }
+
+  .cat-deluxe   .ic { background:rgba(100,0,180,.05);  border:1px solid rgba(100,0,180,.20); }
+  .cat-deluxe   .ic::before { background:linear-gradient(180deg,#6600bb,#420077); }
+  .cat-deluxe   .ic-n { color:#30005a; }
+  .cat-deluxe   .ic-d { color:#4a1878; }
+  .cat-deluxe   .ic-p { color:#6600bb; }
+
+  .cat-imperial .ic { background:rgba(160,88,0,.06);   border:1px solid rgba(160,88,0,.22); }
+  .cat-imperial .ic::before { background:linear-gradient(180deg,#aa5800,#703800); }
+  .cat-imperial .ic-n { color:#4a2200; }
+  .cat-imperial .ic-d { color:#7a4a00; }
+  .cat-imperial .ic-p { color:#aa5800; }
+
+  .cat-matcha   .ic { background:rgba(0,110,40,.05);   border:1px solid rgba(0,110,40,.20); }
+  .cat-matcha   .ic::before { background:linear-gradient(180deg,#006622,#003a12); }
+  .cat-matcha   .ic-n { color:#002a0e; }
+  .cat-matcha   .ic-d { color:#1e5030; }
+  .cat-matcha   .ic-p { color:#006622; }
+
+  /* SEASONAL — rich orange card + name */
+  .cat-seasonal .ic { background:rgba(210,90,0,.05);   border:1px solid rgba(210,90,0,.22); }
+  .cat-seasonal .ic::before { background:linear-gradient(180deg,#d05500,#8a3000); }
+  .cat-seasonal .ic-n { color:#8a3000; font-size:50px; }   /* orange name, bigger */
+  .cat-seasonal .ic-d { color:#c06000; }
+  .cat-seasonal .ic-p { color:#d05500; }
+
+  /* EXTRAS — neutral navy card */
+  .cat-extras   .ic { background:rgba(40,80,140,.05);  border:1px solid rgba(40,80,140,.18); }
+  .cat-extras   .ic::before { background:linear-gradient(180deg,#284880,#162848); }
+  .cat-extras   .ic-n { color:#162848; }
+  .cat-extras   .ic-d { color:#2a4060; }
+  .cat-extras   .ic-p { color:#284880; }
+
+  .ic-l { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Item name — BIGGER: 50px */
+  .ic-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:50px; letter-spacing:2px; line-height:1.05;
+    display:flex; align-items:center; flex-wrap:nowrap;
+    white-space:nowrap; overflow:hidden;
+  }
+
+  /* Description — BIGGER: 22px */
+  .ic-d {
+    font-size:22px; font-weight:800; line-height:1.35; margin-top:5px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* Price — BIGGER: 60px */
+  .ic-p {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:60px; letter-spacing:1px;
+    white-space:nowrap; flex-shrink:0;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.14));
+  }
+
+  /* Tags */
+  .tg {
+    display:inline-flex; align-items:center; gap:4px;
+    font-family:'Nunito',sans-serif;
+    font-size:13px; font-weight:900; letter-spacing:1.5px;
+    padding:4px 11px; border-radius:5px; margin-left:10px;
+    vertical-align:middle; text-transform:uppercase; flex-shrink:0;
+  }
+
+  .tg-best  { background:linear-gradient(90deg,#aa7000,#cc9000); color:#fff; border:1.5px solid #ddaa00; box-shadow:0 0 10px rgba(180,130,0,.5); }
+  .tg-loved { background:linear-gradient(90deg,#cc0044,#ff2d78); color:#fff; border:1.5px solid #ff4488; box-shadow:0 0 10px rgba(255,45,120,.5); }
+  .tg-liked { background:linear-gradient(90deg,#006688,#0099bb); color:#fff; border:1.5px solid #00bbdd; box-shadow:0 0 10px rgba(0,153,187,.5); }
+  .tg-prem  { background:linear-gradient(90deg,#5b1fa0,#7c3aed); color:#fff; border:1.5px solid #9b5de5; box-shadow:0 0 10px rgba(124,58,237,.5); }
+  .tg-new   { background:linear-gradient(90deg,#005500,#1a8a30); color:#fff; border:1.5px solid #2aaa40; box-shadow:0 0 10px rgba(0,140,48,.45); }
+
+  /* ── MATCHA EXTRAS ── */
+  .matcha-extras {
+    margin-top:9px; flex-shrink:0;
+    background:linear-gradient(90deg,rgba(0,210,220,.12),rgba(0,180,255,.10));
+    border:2.5px solid #00ccdd;
+    border-radius:10px; padding:10px 16px;
+    display:flex; align-items:center; gap:14px;
+    box-shadow:0 0 14px rgba(0,200,220,.2);
+  }
+
+  .matcha-extras-label {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:18px; letter-spacing:4px; color:#007a88;
+    border-right:2px solid rgba(0,200,220,.35); padding-right:13px; flex-shrink:0;
+    font-weight:900;
+  }
+
+  .matcha-extras-list { font-size:17px; font-weight:800; color:#005566; }
+
+  /* ── CSECT ── */
+  .csect { display:flex; flex-direction:column; overflow:hidden; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+
+  <!-- TOP RUNNING STRIP — SKY BLUE -->
+  <div class=&quot;top-strip&quot;>
+    <div class=&quot;strip-run&quot;>
+      <div class=&quot;strip-item&quot;>SHAKES <em>(MADE WITH FRESH ICE CREAM BASE)</em></div>
+      <div class=&quot;strip-sep&quot;>✦</div>
+      <div class=&quot;strip-item&quot;>MATCHA AND OTHER DRINKS</div>
+      <div class=&quot;strip-sep&quot;>✦</div>
+      <div class=&quot;strip-item&quot;>SHAKES <em>(MADE WITH FRESH ICE CREAM BASE)</em></div>
+      <div class=&quot;strip-sep&quot;>✦</div>
+      <div class=&quot;strip-item&quot;>MATCHA AND OTHER DRINKS</div>
+      <div class=&quot;strip-sep&quot;>✦</div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class=&quot;grid&quot;>
+
+    <!-- ══ COL 1: SMOOTH SIPS + SIGNATURE STYLE ══ -->
+    <div class=&quot;col&quot;>
+
+      <div class=&quot;csect cat-smooth&quot; style=&quot;flex:3&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#0044cc&quot;></span>SMOOTH SIPS</div>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Vanilla Classic</div>
+              <div class=&quot;ic-d&quot;>Vanilla flavor</div>
+            </div>
+            <div class=&quot;ic-p&quot; style=&quot;color:#0044cc&quot;>$8.99</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Oreo Crush</div>
+              <div class=&quot;ic-d&quot;>Oreo cookies · Chocolate drizzle</div>
+            </div>
+            <div class=&quot;ic-p&quot; style=&quot;color:#0044cc&quot;>$9.99</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>KitKat Cascade <span class=&quot;tg tg-best&quot;>&amp;#9733; BESTSELLER</span></div>
+              <div class=&quot;ic-d&quot;>KitKat · Chocolate drizzle</div>
+            </div>
+            <div class=&quot;ic-p&quot; style=&quot;color:#0044cc&quot;>$9.99</div>
+          </div>
+        </div>
+      </div>
+
+      <div class=&quot;csect cat-sig&quot; style=&quot;flex:3&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#cc0055&quot;></span>SIGNATURE STYLE</div>
+          <span class=&quot;slbl-price&quot;>$10.49</span>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#c88800;&quot;>Mango Mashup <span class=&quot;tg tg-loved&quot;>MOST LOVED</span></div>
+              <div class=&quot;ic-d&quot;>Mango puree · Almonds</div>
+            </div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#cc0022;&quot;>Strawberry Shot</div>
+              <div class=&quot;ic-d&quot;>Strawberry puree</div>
+            </div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Kesar Milk Badam <span class=&quot;tg tg-liked&quot;>MOST LIKED</span></div>
+              <div class=&quot;ic-d&quot;>Caramelized milk · Almonds · Saffron</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ COL 2: DELUXE + IMPERIAL + SEASONAL ══ -->
+    <div class=&quot;col&quot;>
+
+      <div class=&quot;csect cat-deluxe&quot; style=&quot;flex:3.2&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#6600bb&quot;></span>DELUXE DRINKS</div>
+          <span class=&quot;slbl-price&quot;>$10.99</span>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Royal Ras Malai</div>
+              <div class=&quot;ic-d&quot;>Ras malai · Nuts</div>
+            </div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#b8650a;&quot;>Biscoff Bliss</div>
+              <div class=&quot;ic-d&quot;>Biscoff spread · Biscoff crumbs</div>
+            </div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Ube Desire</div>
+              <div class=&quot;ic-d&quot;>Ube yam · Coconut · Milk</div>
+            </div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#006622;&quot;>Matcha Matcha</div>
+              <div class=&quot;ic-d&quot;>Ceremonial matcha · White chocolate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPERIAL INDULGENCE — no gap -->
+      <div class=&quot;csect cat-imperial&quot; style=&quot;flex:1.6&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#aa5800&quot;></span>IMPERIAL INDULGENCE</div>
+          <span class=&quot;slbl-price&quot;>$11.99</span>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#3a7a2a;&quot;>White Chocolate Pistachio</div>
+              <div class=&quot;ic-d&quot;>White chocolate · Pistachio butter · Nuts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEASONAL — only Fresh OJ, orange colours -->
+      <div class=&quot;csect cat-seasonal&quot; style=&quot;flex:1&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#d05500&quot;></span>SEASONAL</div>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Fresh Orange Juice</div>
+              <div class=&quot;ic-d&quot;>Freshly squeezed orange</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$8.49</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ COL 3: MATCHA + EXTRAS ══ -->
+    <div class=&quot;col&quot;>
+
+      <!-- MATCHA COLD DRINKS — 5 items -->
+      <div class=&quot;csect cat-matcha&quot; style=&quot;flex:5&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#006622&quot;></span>MATCHA COLD DRINKS</div>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Matcha Lemonade</div>
+              <div class=&quot;ic-d&quot;>Matcha · Lemon</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$6.99</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Matcha Latte</div>
+              <div class=&quot;ic-d&quot;>Matcha · Milk</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$6.99</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Protein Matcha Latte</div>
+              <div class=&quot;ic-d&quot;>Matcha · Protein milk</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$7.49</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Pretty in Pink <span class=&quot;tg tg-best&quot;>&amp;#9733; BESTSELLER</span></div>
+              <div class=&quot;ic-d&quot;>Matcha · Strawberry puree · Milk</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$7.49</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Sunset Mango</div>
+              <div class=&quot;ic-d&quot;>Matcha · Mango puree · Milk</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$7.49</div>
+          </div>
+        </div>
+
+        <!-- Matcha customisation extras -->
+        <div class=&quot;matcha-extras&quot;>
+          <div class=&quot;matcha-extras-label&quot;>EXTRAS</div>
+          <div class=&quot;matcha-extras-list&quot;>Coconut or Oat Milk +$0.99 &amp;nbsp;&amp;nbsp;·&amp;nbsp;&amp;nbsp; Whipped Cream +$0.50</div>
+        </div>
+      </div>
+
+      <!-- EXTRA DRINKS under matcha -->
+      <div class=&quot;csect cat-extras&quot; style=&quot;flex:2&quot;>
+        <div class=&quot;slbl&quot;>
+          <div class=&quot;slbl-left&quot;><span class=&quot;slbl-bar&quot; style=&quot;background:#284880&quot;></span>EXTRA DRINKS</div>
+        </div>
+        <div class=&quot;items-group&quot;>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot; style=&quot;color:#cc1100;&quot;>Soft Drink Can</div>
+              <div class=&quot;ic-d&quot;>Assorted flavours</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$2.25</div>
+          </div>
+          <div class=&quot;ic&quot;>
+            <div class=&quot;ic-l&quot;>
+              <div class=&quot;ic-n&quot;>Water Bottle</div>
+              <div class=&quot;ic-d&quot;>Water</div>
+            </div>
+            <div class=&quot;ic-p&quot;>$1.75</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /grid -->
+</div>
+</body>
+</html>
+" title="Shakes & Drinks" scrolling="no"></iframe>
+  </div>
+
+  <!-- DOTS -->
+  <div class="dots">
+    <span class="dot-label">HOT FOOD</span>
+    <div class="dot active" id="dot-0"></div>
+    <div class="dot" id="dot-1"></div>
+    <span class="dot-label">DRINKS</span>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+<script>
+  const DURATION = 22000;   // 22 seconds per slide
+  const TOTAL    = 2;
+
+  let current = 0;
+
+  const slides = [document.getElementById('slide-0'), document.getElementById('slide-1')];
+  const dots   = [document.getElementById('dot-0'),   document.getElementById('dot-1')];
+  const fill   = document.getElementById('progress-fill');
+
+  function startProgress() {
+    fill.style.transition = 'none';
+    fill.style.transform  = 'scaleX(1)';
+    void fill.offsetWidth;
+    fill.style.transition = `transform ${DURATION}ms linear`;
+    fill.style.transform  = 'scaleX(0)';
+  }
+
+  function nextSlide() {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (current + 1) % TOTAL;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    startProgress();
+  }
+
+  startProgress();
+  setInterval(nextSlide, DURATION);
+</script>
+
+</body>
+</html>
